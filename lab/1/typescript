@@ -1,0 +1,300 @@
+Script started on 2019-08-29 13:52:59-0400
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab1[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab1[00m$ gcc -g lab1.c -o lab1
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab1[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab1[00m$ gdb lab1
+GNU gdb (Ubuntu 8.1-0ubuntu3) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from lab1...done.
+(gdb) >
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[?1h=[H[2J[16d(B[0;7mexec No process In:                                                L??   PC: ?? [17;1H(B[m[H   (0[0mlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B[2;4H(0[0mx(B[80G(0[0mx(B[3;4H(0[0mx(B[80G(0[0mx(B[4;4H(0[0mx(B[80G(0[0mx(B[5;4H(0[0mx(B[80G(0[0mx(B[6;4H(0[0mx(B[80G(0[0mx(B[7;4H(0[0mx(B[80G(0[0mx(B[8;4H(0[0mx(B[80G(0[0mx(B[9;4H(0[0mx(B[80G(0[0mx(B[10;4H(0[0mx(B[80G(0[0mx(B[11;4H(0[0mx(B[80G(0[0mx(B[12;4H(0[0mx(B[80G(0[0mx(B[13;4H(0[0mx(B[80G(0[0mx(B[14;4H(0[0mx(B[80G(0[0mx(B[15;4H(0[0mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B[1;4H(0[0m(B[8;18H[ No Source Available ][8;18H[23X[H   [8;18H[ No Source Available ][H[8;41H[?1h=[17d[H[2J   (0[0mlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B[2;4H(0[0mx(B[80G(0[0mx(B[3;4H(0[0mx(B[80G(0[0mx(B[4;4H(0[0mx(B[80G(0[0mx(B[5;4H(0[0mx(B[80G(0[0mx(B[6;4H(0[0mx(B[80G(0[0mx(B[7;4H(0[0mx(B[80G(0[0mx(B[8;4H(0[0mx(B[8;18H(0[0m(B[ No Source Available ][80G(0[0mx(B[9;4H(0[0mx(B[80G(0[0mx(B[10;4H(0[0mx(B[80G(0[0mx(B[11;4H(0[0mx(B[80G(0[0mx(B[12;4H(0[0mx(B[80G(0[0mx(B[13;4H(0[0mx(B[80G(0[0mx(B[14;4H(0[0mx(B[80G(0[0mx(B[15;4H(0[0mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B[16;1H(0[0m(B[0;7mexec No process In:                                                L??   PC: ?? [1;1H(B[m[8;41H[16d[H   (0[0;1;7mlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B(B[m[2;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[3;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[4;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[5;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[6;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[7;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[8;4H(0[0;1;7mx(B(B[m[8;18H(0[0;1;7m(B(B[m[23X[80G(0[0;1;7mx(B(B[m[9;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[10;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[11;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[12;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[13;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[14;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[15;4H(0[0;1;7mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B(B[m[1;4H(0[0;1;7m(B(B[m[8;18H[ No Source Available ][H[17d(gdb) list
+1[9Gin /home/ashley/gvsu/cis452/lab1/lab1.c
+(gdb) l[1d(B[0;1;7mlab1.c
+[5G(B[m1[13G#include <stdio.h>
+[5G2[13G#include <math.h>
+[5G3
+4[13Gint main()
+[5G5[13G{
+[5G6[7;16Hdouble num = 0.0;
+[5G7[8;16Hprintf ("Hello, world.\n");
+[5G8[9;16Hnum = pow(2, 28);
+[5G9[10;16Hprintf ("You are the %f person to write this program!\n", num);
+[5G10[11;16Hreturn 0;
+[5G11[13G}
+[5G12
+13[1;13H[15d
+
+
+
+
+(gdb) p main
+$1 = {int ()} 0x68a <main>
+(gdb) run
+Starting program: /home/ashley/gvsu/cis452/lab1/lab1
+[2;14r[14;1H[4S[1;24r[11;4H(0[0;1;7mx(B(B[m14[80G(0[0;1;7mx(B(B[m[12;4H(0[0;1;7mx(B(B[m15[80G(0[0;1;7mx(B(B[m[13;4H(0[0;1;7mx(B(B[m16[80G(0[0;1;7mx(B(B[m[14;4H(0[0;1;7mx(B(B[m17[80G(0[0;1;7mx(B(B[m[1;13H(0[0;1;7m(B(B[m[15d
+(B[0;7mnative process 9466 In:
+(B[m[24d[1;13H[15d
+
+[24d[1;13H[15d
+
+[24d[1;13H[15d
+
+[24d[1;13H[15d
+
+[24dHello, world.
+You are the 268435456.000000 person to write this program!
+[17d[M[23d[Inferior 1 (process 9466) exited normally]
+[16;8H(B[0;7mNo process In:  
+(B[m[2;5H [13G 
+[5G [3;16H[17X
+[5G [4;16H[27X
+[5G [5;16H[17X
+[5G [6;16H[63X
+[5G  [7;16H         
+[5G  [13G 
+[5G  
+  
+  
+  
+  
+  [1;13H[8;18H[ No Source Available ][H[15d[2;5H5[13G{
+[5G6[3;16Hdouble num = 0.0;
+[5G7[4;16Hprintf ("Hello, world.\n");
+[5G8[5;16Hnum = pow(2, 28);
+[5G9[6;16Hprintf ("You are the %f person to write this program!\n", num);
+[5G10[7;16Hreturn 0;
+[5G11[13G}[27X
+[5G12
+13
+14
+15
+16
+17[1;13H[15d
+
+[24d(gdb) exit[17d[M[24dUndefined command: "exit".  Try "help".[17d[M[24d(gdb) eixt[17d[M[24dUndefined command: "eixt".  Try "help".[17d[M[24d(gdb) q quit[24;1H[?1049l[23;0;0t[?1l>]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab1[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab1[00m$ gdb lab1
+GNU gdb (Ubuntu 8.1-0ubuntu3) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from lab1...done.
+(gdb) list[K[K[K[K>
+[?1049h[22;0;0t[1;24r(B[m[4l[?7h[?1h=[H[2J[16d(B[0;7mexec No process In:                                                L??   PC: ?? [17;1H(B[m[H   (0[0mlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B[2;4H(0[0mx(B[80G(0[0mx(B[3;4H(0[0mx(B[80G(0[0mx(B[4;4H(0[0mx(B[80G(0[0mx(B[5;4H(0[0mx(B[80G(0[0mx(B[6;4H(0[0mx(B[80G(0[0mx(B[7;4H(0[0mx(B[80G(0[0mx(B[8;4H(0[0mx(B[80G(0[0mx(B[9;4H(0[0mx(B[80G(0[0mx(B[10;4H(0[0mx(B[80G(0[0mx(B[11;4H(0[0mx(B[80G(0[0mx(B[12;4H(0[0mx(B[80G(0[0mx(B[13;4H(0[0mx(B[80G(0[0mx(B[14;4H(0[0mx(B[80G(0[0mx(B[15;4H(0[0mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B[1;4H(0[0m(B[8;18H[ No Source Available ][8;18H[23X[H   [8;18H[ No Source Available ][H[8;41H[?1h=[17d[H[2J   (0[0mlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B[2;4H(0[0mx(B[80G(0[0mx(B[3;4H(0[0mx(B[80G(0[0mx(B[4;4H(0[0mx(B[80G(0[0mx(B[5;4H(0[0mx(B[80G(0[0mx(B[6;4H(0[0mx(B[80G(0[0mx(B[7;4H(0[0mx(B[80G(0[0mx(B[8;4H(0[0mx(B[8;18H(0[0m(B[ No Source Available ][80G(0[0mx(B[9;4H(0[0mx(B[80G(0[0mx(B[10;4H(0[0mx(B[80G(0[0mx(B[11;4H(0[0mx(B[80G(0[0mx(B[12;4H(0[0mx(B[80G(0[0mx(B[13;4H(0[0mx(B[80G(0[0mx(B[14;4H(0[0mx(B[80G(0[0mx(B[15;4H(0[0mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B[16;1H(0[0m(B[0;7mexec No process In:                                                L??   PC: ?? [1;1H(B[m[8;41H[16d[H   (0[0;1;7mlqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B(B[m[2;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[3;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[4;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[5;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[6;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[7;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[8;4H(0[0;1;7mx(B(B[m[8;18H(0[0;1;7m(B(B[m[23X[80G(0[0;1;7mx(B(B[m[9;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[10;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[11;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[12;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[13;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[14;4H(0[0;1;7mx(B(B[m[80G(0[0;1;7mx(B(B[m[15;4H(0[0;1;7mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B(B[m[1;4H(0[0;1;7m(B(B[m[8;18H[ No Source Available ][H[17d(gdb) main    list
+1[9Gin /home/ashley/gvsu/cis452/lab1/lab1.c
+(gdb) l[1d(B[0;1;7mlab1.c
+[5G(B[m1[13G#include <stdio.h>
+[5G2[13G#include <math.h>
+[5G3
+4[13Gint main()
+[5G5[13G{
+[5G6[7;16Hdouble num = 0.0;
+[5G7[8;16Hprintf ("Hello, world.\n");
+[5G8[9;16Hnum = pow(2, 28);
+[5G9[10;16Hprintf ("You are the %f person to write this program!\n", num);
+[5G10[11;16Hreturn 0;
+[5G11[13G}
+[5G12
+13[1;13H[15d
+
+
+
+
+(gdb) b main[H[7db+[15d[21dBreakpoint 1 at 0x692: file lab1.c, line 6.
+(gdb) run
+Starting program: /home/ashley/gvsu/cis452/lab1/lab1
+[2;14r[14;1H[4S[1;24r[3;1H  
+
+
+
+b+
+
+
+
+ (0[0;1;7mx(B(B[m14[80G(0[0;1;7mx(B(B[m[12;4H(0[0;1;7mx(B(B[m15[80G(0[0;1;7mx(B(B[m[13;4H(0[0;1;7mx(B(B[m16[80G(0[0;1;7mx(B(B[m[14;4H(0[0;1;7mx(B(B[m17[80G(0[0;1;7mx(B(B[m[1;13H(0[0;1;7m(B(B[m[7d  [H
+
+b+[15d
+(B[0;7mnative process 9485 In:
+(B[m[24d[1;13H
+
+  [H
+
+b+[15d
+
+[24d[1;13H
+
+  [H
+
+b+[15d
+
+[24d[1;13H
+
+  [H
+
+b+[15d
+
+[24d[1;13H
+
+  [H
+
+b+[15d
+
+[24d[3d  [H
+
+B+[15d[16;25H(B[0;7mmain[16;56HL6    PC: 0x555555554692
+(B[m[3;5H(B[0;7m6          double num = 0.0;[80G(B[m  [H
+
+B+>[15d
+
+[2M[23dBreakpoint 1, main () at lab1.c:6
+(gdb) n[17d[M[24d[16;57H(B[0;7m7[79Gb
+(B[m[3;5H6          double num = 0.0;
+[5G(B[0;7m7          printf ("Hello, world.\n");[80G(B[m[A   [H
+
+B+
+>[15d[24d(gdb) n[17d[M[24dHello, world.
+[16;57H(B[0;7m8[78Ga7
+(B[m[4;5H7          printf ("Hello, world.\n");
+[5G(B[0;7m8          num = pow(2, 28);[80G(B[m[H
+
+  
+ [H
+
+B+
+
+>[15d[24d(gdb) [H[2J   (0[0;1;7mlqq(B[0;1;7mlab1.c(0[0;1;7mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B(B[m[2;4H(0[0;1;7mx(B(B[m5[13G{[80G(0[0;1;7mx(B(B[m[3;1H(0[0;1;7m(B(B[mB+ (0[0;1;7mx(B(B[m6[3;16Hdouble num = 0.0;[80G(0[0;1;7mx(B(B[m[4;4H(0[0;1;7mx(B(B[m7[4;16Hprintf ("Hello, world.\n");[80G(0[0;1;7mx(B(B[m[5;3H(0[0;1;7m(B(B[m>(0[0;1;7mx(B[0;7m8          num = pow(2, 28);[80G(0[0;1;7mx(B(B[m[6;4H(0[0;1;7mx(B(B[m9[6;16Hprintf ("You are the %f person to write this program!\n", num); (0[0;1;7mx(B(B[m[7;4H(0[0;1;7mx(B(B[m10[7;16Hreturn 0;[80G(0[0;1;7mx(B(B[m[8;4H(0[0;1;7mx(B(B[m11[13G}[80G(0[0;1;7mx(B(B[m[9;4H(0[0;1;7mx(B(B[m12[80G(0[0;1;7mx(B(B[m[10;4H(0[0;1;7mx(B(B[m13[80G(0[0;1;7mx(B(B[m[11;4H(0[0;1;7mx(B(B[m14[80G(0[0;1;7mx(B(B[m[12;4H(0[0;1;7mx(B(B[m15[80G(0[0;1;7mx(B(B[m[13;4H(0[0;1;7mx(B(B[m16[80G(0[0;1;7mx(B(B[m[14;4H(0[0;1;7mx(B(B[m17[80G(0[0;1;7mx(B(B[m[15;4H(0[0;1;7mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B(B[m[16;1H(0[0;1;7m(B[0;7mnative process 9485 In: main                           L8    PC: 0x5555555546a7 [17;1H(B[mBreakpoint 1 at 0x692: file lab1.c, line 6.
+(gdb) run
+Starting program: /home/ashley/gvsu/cis452/lab1/lab1
+
+Breakpoint 1, main () at lab1.c:6
+(gdb) n
+(gdb) n
+(gdb)[15d[5;80H[17d[K[A[1;13H
+
+  
+
+ [H
+
+B+
+
+>[15d
+
+Breakpoint 1 at 0x692: file lab1.c, line 6.[24;7Hn[17d[M[24d[16;57H(B[0;7m9[78Gb4
+(B[m[5;5H8          num = pow(2, 28);
+[5G(B[0;7m9          printf ("You are the %f person to write this program!\n", num);[C(B[m[H
+
+  
+
+ [H
+
+B+
+
+
+>[15d[24d(gdb) pnum    num[17d[M[24d$1 = 268435456[17d[M[24d(gdb) n[17d[M[24dYou are the 268435456.000000 person to write this program!
+[16;57H(B[0;7m10[78Gd2
+(B[m[6;5H9          printf ("You are the %f person to write this program!\n", num);
+[5G(B[0;7m10         return 0;[80G(B[m[H
+
+  
+
+
+ [H
+
+B+
+
+
+
+>[15d[24d(gdb) [H[2J   (0[0;1;7mlqq(B[0;1;7mlab1.c(0[0;1;7mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk(B(B[m[2;4H(0[0;1;7mx(B(B[m5[13G{[80G(0[0;1;7mx(B(B[m[3;1H(0[0;1;7m(B(B[mB+ (0[0;1;7mx(B(B[m6[3;16Hdouble num = 0.0;[80G(0[0;1;7mx(B(B[m[4;4H(0[0;1;7mx(B(B[m7[4;16Hprintf ("Hello, world.\n");[80G(0[0;1;7mx(B(B[m[5;4H(0[0;1;7mx(B(B[m8[5;16Hnum = pow(2, 28);[80G(0[0;1;7mx(B(B[m[6;4H(0[0;1;7mx(B(B[m9[6;16Hprintf ("You are the %f person to write this program!\n", num); (0[0;1;7mx(B(B[m[7;3H(0[0;1;7m(B(B[m>(0[0;1;7mx(B[0;7m10         return 0;[80G(0[0;1;7mx(B(B[m[8;4H(0[0;1;7mx(B(B[m11[13G}[80G(0[0;1;7mx(B(B[m[9;4H(0[0;1;7mx(B(B[m12[80G(0[0;1;7mx(B(B[m[10;4H(0[0;1;7mx(B(B[m13[80G(0[0;1;7mx(B(B[m[11;4H(0[0;1;7mx(B(B[m14[80G(0[0;1;7mx(B(B[m[12;4H(0[0;1;7mx(B(B[m15[80G(0[0;1;7mx(B(B[m[13;4H(0[0;1;7mx(B(B[m16[80G(0[0;1;7mx(B(B[m[14;4H(0[0;1;7mx(B(B[m17[80G(0[0;1;7mx(B(B[m[15;4H(0[0;1;7mmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj(B(B[m[16;1H(0[0;1;7m(B[0;7mnative process 9485 In: main                           L10   PC: 0x5555555546d2 [17;1H(B[mBreakpoint 1, main () at lab1.c:6
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb) p num
+$1 = 268435456
+(gdb) n
+(gdb)[15d[7;80H[17d[K[A[1;13H
+
+  
+
+
+
+ [H
+
+B+
+
+
+
+>[15d
+
+Breakpoint 1, main () at lab1.c:6[24;7Hn[17d[M[24d[16;58H(B[0;7m1[79G7
+(B[m[7;5H10         return 0;
+[5G(B[0;7m11      }[80G(B[m[H
+
+  
+
+
+
+ [H
+
+B+[8d>[15d[24d(gdb) n[17d[M[24d[16;25H(B[0;7m__libc_start_main[16;57H344[16;68H7ffff7a05b9
+(B[m[2;5H [13G 
+[5G [3;16H[17X
+[5G [4;16H[27X
+[5G [5;16H[17X
+[5G [6;16H[63X
+[5G  [7;16H         
+[5G         
+[5G  
+  
+  
+  
+  
+  [1;13H[8;18H[ No Source Available ][H
+
+  [8d [H[15d
+
+[3M
+
+
+
+__libc_start_main (main=0x55555555468a <main>, argc=1, argv=0x7fffffffdfd8,
+[5Ginit=<optimized out>, fini=<optimized out>, rtld_fini=<optimized out>,
+[5Gstack_end=0x7fffffffdfc8) at ../csu/libc-start.c:344
+(gdb) eixt   xit[17d[M[24dUndefined command: "exit".  Try "help".[17d[M[24d(gdb) quit[17d[M[24d[17d[4M
+
+
+A debugging session is active.[22;9HInferior 1 [process 9485] will be killed.
+
+Quit anyway? (y or n) y[24;1H[?1049l[23;0;0t[?1l>]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab1[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab1[00m$ quit
+
+Command 'quit' not found, did you mean:
+
+  command 'luit' from deb x11-utils
+  command 'quilt' from deb quilt
+  command 'quot' from deb quota
+  command 'qgit' from deb qgit
+  command 'quiz' from deb bsdgames
+
+Try: sudo apt install <deb name>
+
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab1[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab1[00m$ exit
+exit
+
+Script done on 2019-08-29 13:56:01-0400
