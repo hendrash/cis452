@@ -1,2 +1,2 @@
 all:
-	gcc -g sample1.c -o sample1
+	gcc -g  sampleShell.c -o  sampleShell
