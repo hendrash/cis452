@@ -2,12 +2,13 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main(int argc, char* argv[]) {
 	
 	char input [50];
-	char command [10];
-	char *parameters;
+	const char *command;
+	char* parameters;
 	pid_t pid, child; 
     int status;
 	
@@ -17,8 +18,9 @@ int main(int argc, char* argv[]) {
 		scanf("%s",input); //he wants us to use fgets?
 		
 		command = strtok (input, " ");
-		parameters = strchr(input, ' ')
+		parameters = strtok (NULL, " ");
 		
+				printf("value for input is: %s \n", input);
 		printf("value for command is: %s \n", command);
 		printf("value for params is: %s \n", parameters);
 		
@@ -30,7 +32,7 @@ int main(int argc, char* argv[]) {
 		} else if (pid) {
 			wait(-1, &status);
 		} else {
-			if (execve(command, parameters) < 0) {
+			if (execve(command, parameters, 0) < 0) {
 				perror("exec failed");
 				exit(1);
 			}	
