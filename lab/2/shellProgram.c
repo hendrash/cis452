@@ -13,31 +13,29 @@ int main(int argc, char* argv[]) {
 	
 	while (input != "quit") {
 		
-	printf("Please enter a command with parameters: ");
-	scanf("%s",input);
-	
-	command = 
-	parameters = strchr(input, ' ')
-	
-	pid = fork();
-	
-	if (pid < 0) {
-		printf("ERROR: Fork operation failed");
-		exit(1);
-	} else if (pid) {
-		wait(-1, &status);
-	} else {
-		execve(command, parameters); //TODO this nonsense
-	}
+		printf("Please enter a command with parameters: ");
+		scanf("%s",input); //he wants us to use fgets?
 		
+		command = strtok (input, " ");
+		parameters = strchr(input, ' ')
 		
+		printf("value for command is: %s \n", command);
+		printf("value for params is: %s \n", parameters);
+		
+		pid = fork();
+		
+		if (pid < 0) {
+			printf("ERROR: Fork operation failed");
+			exit(1);
+		} else if (pid) {
+			wait(-1, &status);
+		} else {
+			if (execve(command, parameters) < 0) {
+				perror("exec failed");
+				exit(1);
+			}	
+		}
 	}
-
-    if (execvp(command, &argv[1]) < 0) {
-        perror("exec failed");
-        exit(1);
-    }
-    puts("After the exec");
 
     return 0;
 }
