@@ -15,12 +15,12 @@ int main(int argc, char* argv[]) {
 	while (input != "quit") {
 		
 		printf("Please enter a command with parameters: ");
-		scanf("%s",input); //he wants us to use fgets?
+		fgets("%s",input); //Fix this to work
 		
 		command = strtok (input, " ");
 		parameters = strtok (NULL, " ");
 		
-				printf("value for input is: %s \n", input);
+		printf("value for input is: %s \n", input);
 		printf("value for command is: %s \n", command);
 		printf("value for params is: %s \n", parameters);
 		
