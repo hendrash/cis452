@@ -1,2 +1,2 @@
 all:
-	gcc -g  sampleShell.c -o  sampleShell
+	gcc -g  shellProgram.c -o  shellProgram
