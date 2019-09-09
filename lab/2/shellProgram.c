@@ -8,7 +8,7 @@
 #include <sys/times.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-int main(int arg, char** argv) {
+int main(void) {
 	
 	char input [50];
 	char *command;
@@ -28,7 +28,10 @@ int main(int arg, char** argv) {
 		printf(">");
 		fgets(input, 50, stdin); //Fix this to work
 		strcpy(input,strsegment(input,'\n'));
-
+		
+		char ** parstring=splitString(input,' ');
+	
+		/*
 		command = strtok (input, " ");
 		parameters[0] = command;
 		int count = 1;
@@ -36,14 +39,27 @@ int main(int arg, char** argv) {
 			parameters[count] = strtok (NULL, " ");
 			printf("Value of params[%d] = %s\n", count, parameters[count] );
 			++count;
+		}*/
+
+		// Start Time
+
+
+	
+		st_time=times(&st_cpu);
+		strcpy(command, parstring[0]);	
+		printf("value of parameters: ");	
+		
+		for(int i=0; parstring[i]!=NULL; i++){
+			printf("%s ",parstring[i]);
 		}
 
-		// Start Time	
-		st_time=times(&st_cpu);
+		printf("\n\nvalue for input is: :%s: \n\n", input);
+		printf("value for command is: :%s: \n\n", command);
 
+		//printf("value for params is: :%s: \n\n", parameters);
 
 		pid = fork();
-
+		
 		if (pid < 0) {
 			printf("ERROR: Fork operation failed");
 			exit(1);
@@ -51,10 +67,12 @@ int main(int arg, char** argv) {
 			wait(&status);
 		} else {
 
-			if (execve(command, parameters, 0) < 0) {
+			if (execve(command, parstring, 0) < 0) {
 				perror("exec failed");
 				exit(1);
-			} else {
+			} 
+		}
+
 				//Currently nothing works thats because the execve is failing 	
 				//  End Time	
 				// https://linux.die.net/man/2/getrusage
@@ -66,9 +84,7 @@ int main(int arg, char** argv) {
 				printf("user cpu time used %ld \n", buf.ru_utime.tv_sec);
 
 				printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
-			}
-
-		}
+	
 	}while (strcmp(input,"quit"));
 
 	return 0;
