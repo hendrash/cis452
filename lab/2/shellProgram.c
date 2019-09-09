@@ -9,6 +9,7 @@
 #include <sys/time.h>
 #include <sys/resource.h>
 int main(int arg, char** argv) {
+	
 	char input [50];
 	const char *command;
 	char* parameters;
@@ -19,6 +20,7 @@ int main(int arg, char** argv) {
 	static struct tms en_cpu;
 	int status;
 	struct rusage buf;
+	
 	do {
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
@@ -50,19 +52,19 @@ int main(int arg, char** argv) {
 			if (execve(command, &parameters, 0) < 0) {
 				perror("exec failed");
 				exit(1);
+			} else {
+				//Currently nothing works thats because the execve is failing 	
+				//  End Time	
+				// https://linux.die.net/man/2/getrusage
+				getrusage(RUSAGE_SELF, &buf);
+
+				en_time=times(&en_cpu);
+				printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu)));
+
+				printf("user cpu time used %ld \n", buf.ru_utime.tv_sec);
+
+				printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
 			}
-
-			//Currently nothing works thats because the execve is failing 	
-			//  End Time	
-			// https://linux.die.net/man/2/getrusage
-			getrusage(RUSAGE_SELF, &buf);
-
-			en_time=times(&en_cpu);
-			printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu)));
-
-			printf("user cpu time used %ld \n", buf.ru_utime.tv_sec);
-
-			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
 
 		}
 	}while (strcmp(input,"quit"));
