@@ -12,7 +12,7 @@ int main(int arg, char** argv) {
 	
 	char input [50];
 	const char *command;
-	char* parameters;
+	const char* parameters = malloc(10 * sizeof(char*));
 	pid_t pid, child; 
 	static struct tms st_cpu;
 	static clock_t st_time;
@@ -25,20 +25,25 @@ int main(int arg, char** argv) {
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
 		printf(">");
-		fgets(input, 50, stdin); //Fix this to work
+		fgets(input, 50, stdin);
 		strcpy(input,strsegment(input,'\n'));
 
 		command = strtok (input, " ");
-		parameters = strtok (NULL, " ");
+		parameters[0] = command;
+		int count = 1;
+		while(&strtok (NULL, " ") != '\n') {
+			&parameters[count] = strtok (NULL, " ");
+					printf("went once: %s \n", &parameters[count]);
+			++count;
+		}
 
 		// Start Time	
 		st_time=times(&st_cpu);
 
 
 
-		// printf("value for input is: %s \n", input);
-		// printf("value for command is: %s \n", command);
-		// printf("value for params is: %s \n", parameters);
+		printf("value for command is: %s \n", command);
+		printf("value for params is: %s \n", parameters);
 
 		pid = fork();
 
