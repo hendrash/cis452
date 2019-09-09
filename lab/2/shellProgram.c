@@ -11,8 +11,9 @@
 int main(int arg, char** argv) {
 	
 	char input [50];
-	const char *command;
-	const char* parameters = malloc(10 * sizeof(char*));
+	char *command;
+	const int MAX = 10;
+	char* parameters[MAX];
 	pid_t pid, child; 
 	static struct tms st_cpu;
 	static clock_t st_time;
@@ -25,25 +26,21 @@ int main(int arg, char** argv) {
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
 		printf(">");
-		fgets(input, 50, stdin);
+		fgets(input, 50, stdin); //Fix this to work
 		strcpy(input,strsegment(input,'\n'));
 
 		command = strtok (input, " ");
 		parameters[0] = command;
 		int count = 1;
-		while(&strtok (NULL, " ") != '\n') {
-			&parameters[count] = strtok (NULL, " ");
-					printf("went once: %s \n", &parameters[count]);
+		while(*strtok (NULL, " ") != '\n') {
+			parameters[count] = strtok (NULL, " ");
+			printf("Value of params[%d] = %s\n", count, parameters[count] );
 			++count;
 		}
 
 		// Start Time	
 		st_time=times(&st_cpu);
 
-
-
-		printf("value for command is: %s \n", command);
-		printf("value for params is: %s \n", parameters);
 
 		pid = fork();
 
@@ -54,7 +51,7 @@ int main(int arg, char** argv) {
 			wait(&status);
 		} else {
 
-			if (execve(command, &parameters, 0) < 0) {
+			if (execve(command, parameters, 0) < 0) {
 				perror("exec failed");
 				exit(1);
 			} else {
