@@ -27,6 +27,7 @@ int main(void) {
 		printf("Please enter a command with parameters: \n");
 		printf(">");
 		fgets(input, 50, stdin); //Fix this to work
+		printf("\n\n");
 		strcpy(input,strsegment(input,'\n'));
 		
 		char ** parstring=splitString(input,' ');
@@ -49,13 +50,13 @@ int main(void) {
 		strcpy(command, parstring[0]);	
 		printf("value of parameters: ");	
 		
-		for(int i=0; parstring[i]!=NULL; i++){
+/*		for(int i=0; parstring[i]!=NULL; i++){
 			printf("%s ",parstring[i]);
 		}
 
 		printf("\n\nvalue for input is: :%s: \n\n", input);
 		printf("value for command is: :%s: \n\n", command);
-
+*/
 		//printf("value for params is: :%s: \n\n", parameters);
 
 		pid = fork();
@@ -67,7 +68,7 @@ int main(void) {
 			wait(&status);
 		} else {
 
-			if (execve(command, parstring, 0) < 0) {
+			if (execvp(parstring[0], &parstring[0]) < 0) {
 				perror("exec failed");
 				exit(1);
 			} 
@@ -79,12 +80,15 @@ int main(void) {
 				getrusage(RUSAGE_SELF, &buf);
 
 				en_time=times(&en_cpu);
+
+				printf("\n\n\n\n\n");
 				printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu)));
 
 				printf("user cpu time used %ld \n", buf.ru_utime.tv_sec);
 
 				printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
-	
+
+				printf("\n\n\n\n\n");	
 	}while (strcmp(input,"quit"));
 
 	return 0;
