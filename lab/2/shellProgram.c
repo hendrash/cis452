@@ -21,7 +21,7 @@ int main(void) {
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
 		printf(">");
-		fgets(input, 50, stdin);
+		fgets(input, 50, stdin); 
 		printf("\n\n");
 		strcpy(input,strsegment(input,'\n'));
 
@@ -38,7 +38,6 @@ int main(void) {
 			
 			getrusage(RUSAGE_CHILDREN, &buf); //Monitors total usage for all children
 
-			en_time=times(&en_cpu);
 
 			printf("\n\n\n\n\n");			
 			printf("user cpu time used %ld \n", (buf.ru_utime.tv_usec - lastTotal));
@@ -49,7 +48,6 @@ int main(void) {
 			lastTotal = buf.ru_utime.tv_sec;
 			
 		} else { //everything in here is the child's code
-			int i =0;
 			printf("Command entered was" );
 			if (execvp(*string,string) < 0) {
 				perror("exec failed");
