@@ -26,10 +26,8 @@ int main(void) {
 		fgets(input, 50, stdin); //Fix this to work
 		printf("\n\n");
 		strcpy(input,strsegment(input,'\n'));
-		
 
-	
-		parse(input, string);
+		execParse(input, string);
 
 		st_time=times(&st_cpu);
 	
