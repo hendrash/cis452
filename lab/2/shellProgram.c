@@ -11,11 +11,7 @@
 int main(void) {
 	
 	char input [50];
-	pid_t pid, child; 
-	static struct tms st_cpu;
-	static clock_t st_time;
-	static clock_t en_time;
-	static struct tms en_cpu;
+	pid_t pid; 
 	int status;
 	struct rusage buf;
 	char* string[64];
@@ -25,13 +21,12 @@ int main(void) {
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
 		printf(">");
-		fgets(input, 50, stdin); //Fix this to work
+		fgets(input, 50, stdin); 
 		printf("\n\n");
 		strcpy(input,strsegment(input,'\n'));
 
 		execParse(input, string);
 
-		st_time=times(&st_cpu);
 	
 		pid = fork();
 		
@@ -44,10 +39,9 @@ int main(void) {
 			
 			getrusage(RUSAGE_CHILDREN, &buf); //Monitors total usage for all children
 
-			en_time=times(&en_cpu);
 
 			printf("\n\n\n\n\n");			
-			printf("user cpu time used %ld \n", (buf.ru_utime.tv_sec - lastTotal));
+			printf("user cpu time used sec: %ld \n", (buf.ru_utime.tv_usec - lastTotal));
 
 			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
 			printf("\n\n\n\n\n");
@@ -55,9 +49,7 @@ int main(void) {
 			lastTotal = buf.ru_utime.tv_sec;
 			
 		} else { //everything in here is the child's code
-			int i =0;
 			printf("Command entered was" );
-		//	while( parstring[i]!=NULL){ printf("(:%s:)\n", parstring[i]); i++;}
 			if (execvp(*string,string) < 0) {
 				perror("exec failed");
 				exit(1);
