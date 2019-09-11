@@ -18,7 +18,9 @@ int main(void) {
 	static struct tms en_cpu;
 	int status;
 	struct rusage buf;
-	char* string[64];		
+	char* string[64];
+	long lastTotal = 0;
+	
 	do {
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
@@ -36,9 +38,9 @@ int main(void) {
 		if (pid < 0) {
 			printf("ERROR: Fork operation failed");
 			exit(1);
-		} else if (pid) {
+		} else if (pid) { //parent's code
 			wait(&status);
-		} else {
+		} else { //everything in here is the child's code
 			int i =0;
 			printf("Command entered was" );
 		//	while( parstring[i]!=NULL){ printf("(:%s:)\n", parstring[i]); i++;}
@@ -46,20 +48,23 @@ int main(void) {
 				perror("exec failed");
 				exit(1);
 			} 
+			getrusage(RUSAGE_SELF, &buf); //RUASGE_CHILDREN
+
+			en_time=times(&en_cpu);
+
+			printf("\n\n\n\n\n");
+			printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu)));
+			
+			//buf.ru_utime.tv_sec - lastTotal = what we need to print
+
+			printf("user cpu time used %ld \n", buf.ru_utime.tv_sec - lastTotal);
+
+			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
+
+			printf("\n\n\n\n\n");
+			lastTotal = buf.ru_utime.tv_sec;
 		}
-
-			getrusage(RUSAGE_SELF, &buf);
-
-				en_time=times(&en_cpu);
-
-				printf("\n\n\n\n\n");
-				printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu)));
-
-				printf("user cpu time used %ld \n", buf.ru_utime.tv_sec);
-
-				printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
-
-				printf("\n\n\n\n\n");	
+	
 	}while (strcmp(input,"quit"));
 
 	return 0;
