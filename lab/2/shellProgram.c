@@ -39,7 +39,21 @@ int main(void) {
 			printf("ERROR: Fork operation failed");
 			exit(1);
 		} else if (pid) { //parent's code
+		
 			wait(&status);
+			
+			getrusage(RUSAGE_CHILDREN, &buf); //Monitors total usage for all children
+
+			en_time=times(&en_cpu);
+
+			printf("\n\n\n\n\n");			
+			printf("user cpu time used %ld \n", (buf.ru_utime.tv_sec - lastTotal));
+
+			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
+			printf("\n\n\n\n\n");
+			
+			lastTotal = buf.ru_utime.tv_sec;
+			
 		} else { //everything in here is the child's code
 			int i =0;
 			printf("Command entered was" );
@@ -48,19 +62,6 @@ int main(void) {
 				perror("exec failed");
 				exit(1);
 			} 
-			getrusage(RUSAGE_SELF, &buf); //RUASGE_CHILDREN
-
-			en_time=times(&en_cpu);
-
-			printf("\n\n\n\n\n");
-			//printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu))); <- We don't need this
-			
-			printf("user cpu time used %ld \n", (buf.ru_utime.tv_sec - lastTotal));
-
-			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
-			printf("\n\n\n\n\n");
-			
-			lastTotal = buf.ru_utime.tv_sec;
 		}
 	
 	}while (strcmp(input,"quit"));
