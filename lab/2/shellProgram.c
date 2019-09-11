@@ -15,10 +15,10 @@ int main(void) {
 	int status;
 	struct rusage buf;
 	char* string[64];
-	long lastTotal = 0;
-	
+	long lastCpuTotal = 0;
+	long lastSwitchTotal = 0;
+
 	do {
-		lastTotal=0;
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
 		printf(">");
@@ -41,12 +41,13 @@ int main(void) {
 
 
 			printf("\n\n\n\n\n");			
-			printf("user cpu time used %ld \n", (buf.ru_utime.tv_usec - lastTotal));
+			printf("user cpu time used %ld \n", (buf.ru_utime.tv_usec - lastCpuTotal));
 
-			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
+			printf("involuntary context switches: %ld\n", buf.ru_nivcsw - lastSwitchTotal);
 			printf("\n\n\n\n\n");
 			
-			lastTotal = buf.ru_utime.tv_sec;
+			lastCpuTotal = buf.ru_utime.tv_usec;
+			lastSwitchTotal = buf.ru_nivcsw;
 			
 		} else { //everything in here is the child's code
 			printf("Command entered was" );
