@@ -53,15 +53,13 @@ int main(void) {
 			en_time=times(&en_cpu);
 
 			printf("\n\n\n\n\n");
-			printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu)));
+			//printf("cpu time sec: %jd\n",(__intmax_t)((st_time)-times(&en_cpu))); <- We don't need this
 			
-			//buf.ru_utime.tv_sec - lastTotal = what we need to print
-
-			printf("user cpu time used %ld \n", buf.ru_utime.tv_sec - lastTotal);
+			printf("user cpu time used %ld \n", (buf.ru_utime.tv_sec - lastTotal));
 
 			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
-
 			printf("\n\n\n\n\n");
+			
 			lastTotal = buf.ru_utime.tv_sec;
 		}
 	
