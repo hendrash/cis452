@@ -6,8 +6,8 @@
 #include <sys/times.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-
 #include "../clib/clib.h"
+
 int main(void) {
 	
 	char input [50];
@@ -26,7 +26,6 @@ int main(void) {
 		strcpy(input,strsegment(input,'\n'));
 
 		execParse(input, string);
-
 	
 		pid = fork();
 		
@@ -41,7 +40,7 @@ int main(void) {
 
 
 			printf("\n\n\n\n\n");			
-			printf("user cpu time used sec: %ld \n", (buf.ru_utime.tv_usec - lastTotal));
+			printf("user cpu time used %ld \n", (buf.ru_utime.tv_usec - lastTotal));
 
 			printf("involuntary context switches: %ld\n", buf.ru_nivcsw);
 			printf("\n\n\n\n\n");
