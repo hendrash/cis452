@@ -18,6 +18,7 @@ int main(void) {
 	long lastTotal = 0;
 	
 	do {
+		lastTotal=0;
 		memset(input, 0, 50*sizeof(input[0]));	
 		printf("Please enter a command with parameters: \n");
 		printf(">");
