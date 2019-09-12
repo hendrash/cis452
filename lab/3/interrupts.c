@@ -8,24 +8,42 @@ void sigHandler(int);
 int main(){
 
 pid_t pid;
+int fd[2];
+
+    if (pipe (fd) < 0) {
+        perror ("Error creating pipe");
+        exit(1);
+    }
 
 if((pid=fork()) < 0){
 	perror("forking error");
 } else if (pid) { //parent's code
+
+	//redirect parent to read in from the pipe
+    dup2 (fd[READ], STDIN_FILENO);
+    close (fd[READ]);
+    close (fd[WRITE]);
+	
 	printf("\nspawned child PID# %i\n", pid);
 	signal(SIGINT,sigHandler);
 	signal(SIGUSR1, sigHandler);
 	signal(SIGUSR2, sigHandler);
 	printf("waiting...");
 	sleep();
+	
 } else { //child's code
+	
+	//redirect child to write into the pipe
+	dup2 (fd[WRITE], STDOUT_FILENO);
+	close (fd[READ]);
+	close (fd[WRITE]);
 
 	while(1) {
 		//sleep for 1-5 random seconds
 		//int randomTime = rand() %5 + 1;
 		//sleep(randomTime);
 		
-		//TODO generate signals
+		//TODO generate signals and write them into the pipe
 	}
 	
 }
