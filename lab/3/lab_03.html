@@ -1,0 +1,394 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html lang="en-us"><head>
+    <meta http-equiv="Content-Type" content="text/html;
+      charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Mozilla/4.7 [en] (Win98; I)
+      [Netscape]">
+    <title>gw's CS 452 Lab</title></head>
+<body style="direction: ltr;" bgcolor="#ffffff">
+    <center>
+      <h2> CIS 452 Lab: Week 3<br>
+        InterProcess Communication (IPC)&nbsp;&nbsp;</h2>
+    </center>
+    <center>
+    </center><hr>
+    <h3> Overview</h3>
+The purpose of this assignment is to become familiar with some
+fundamental methods of communication between processes (IPC).&nbsp;
+Every operating system provides multiple mechanisms for communicating
+between processes and/or threads; this lab specifically explores the
+use of signals and pipes.&nbsp; In order to better understand pipes, it
+also provides an introduction (or refresher) to basic UNIX file
+operations. <br>
+    <h3>&nbsp;<br>
+    </h3>
+    <h3> Activities</h3>
+    <ul>
+      <li> Work your way through the following exercises, demonstrating
+        your
+        knowledge of the material by answering the numbered questions.</li>
+      <li> Write a short multi-process program that demonstrates OS-level
+        interprocess communication by sending and catching&nbsp;signals.&nbsp; Both
+        the lab and included programming assignment are intended to be
+        completed
+        with a partner as a <i>group project</i>.&nbsp; Be prepared to
+        demonstrate your program.<br>
+      </li>
+      <li> Submit a detailed lab report.&nbsp; Include:</li><ul><li>the answers to
+        the
+        numbered questions</li><li>your source code</li><li>sample output for the programming assignment (script file or screenshot).<br>
+      </li></ul>
+    </ul>
+    <h3>&nbsp;<br>
+    </h3>
+    <h3> Signals</h3>
+    Signals represent a simple, one-directional form of communication
+    between processes.&nbsp; There are a number of predefined signals
+    that
+    exhibit a default behavior (look in <tt>/usr/include/signal.h</tt>
+    and
+    particularly in <tt>/usr/include/bits/signum.h</tt>
+    for details) .&nbsp; For certain signals, it is possible to override
+    the
+    default behavior by installing a signal handler, essentially a
+    function
+    that defines what to do when the associated signal is
+    received.&nbsp;
+    The signal handler is installed (and registered) via the <b><tt>signal()</tt></b>
+    system call.
+    <p>Signals can originate with the user, with the operating system,
+      or
+      with another process.&nbsp; They can be sent from one process to
+      another
+      using the <b><tt>kill()</tt></b> system call - a mechanism known
+      as
+      raising a signal.&nbsp; (Note: it is called "kill" for historical
+      reasons - it is basically a "send".) </p>
+    <p>The following sample program illustrates the installation of a
+      signal handler that overrides the built-in interrupt signal
+      (Control-C).&nbsp;
+      This
+      technique allows interrupts to be used, for example, to gracefully
+      shut
+      down a long-running process such as a daemon: by closing all files,
+      pipes
+      and sockets, and terminating all child processes before exiting.&nbsp; Refer
+      to
+      the
+      man pages to understand the use of the <tt>signal()</tt> system
+      call
+      and the meaning of its arguments.&nbsp;&nbsp;Note that this section of the lab refers to
+      the&nbsp;simpler
+      ANSI <span style="font-family: monospace; font-weight: bold;">signal
+      </span>mechanism;
+      modern signaling often uses the POSIX <span style="font-family: monospace; font-weight: bold;">sigaction </span>mechanism.<br>
+    </p>
+    <p><u>Sample Program 1</u> </p>
+    <p><tt>#include &lt;stdio.h&gt;</tt> <br>
+      <tt>#include &lt;unistd.h&gt;</tt> <br>
+      <tt>#include &lt;stdlib.h&gt;</tt> <br>
+      <tt>#include &lt;signal.h&gt;</tt> </p>
+    <p><tt>void sigHandler (int);</tt> </p>
+    <p><tt>int main()</tt> <br>
+      <tt>{</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; signal (SIGINT, sigHandler);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; printf ("waiting...\n");</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; pause();</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; return 0;</tt> <br>
+      <tt>}</tt> </p>
+    <p><tt>void</tt> <br>
+      <tt>sigHandler (int sigNum)</tt> <br>
+      <tt>{</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; printf (" received an interrupt.\n");</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp; // this is where shutdown code would be
+        inserted</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp; sleep (1);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; printf ("outta here.\n");</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; exit(0);</tt> <br>
+      <tt>}</tt> </p>
+    <p><b>Perform the following operations and answer the questions:</b>
+    </p>
+    <ul>
+      <li> study, compile and run Sample Program 1.&nbsp; Send the
+        program
+        an interrupt via the keyboard.</li>
+    </ul>
+    <ol>
+      <li> what does the program print, and in what order?</li>
+      <li> describe <i>exactly</i> what is happening to produce the
+        answer
+        observed for the above question&nbsp;</li>
+    </ol>
+    <span style="font-weight: bold;"><br></span><span style="text-decoration: underline;">Reliable Signals</span><span style="font-weight: bold;"><br><br></span>The
+original ANSI signal() mechanism had a flaw called a "race condition",
+basically a concurrency problem (more on that in future labs).
+&nbsp;Newer versions of Linux have fixed
+this problem. However, this means that code using <span style="font-family: monospace; font-weight: bold;">signal()</span> may
+work correctly on some (newer) systems and incorrectly on other (older) systems; hence it is
+referred to as
+unreliable.<br><br>The&nbsp;POSIX <span style="font-family: monospace; font-weight: bold;">sigaction()</span> mechanism&nbsp;is implemented uniformly (i.e. reliably) across all versions.<br><span style="font-weight: bold;"></span><h3>&nbsp;<br>
+    </h3>
+    <h3> File I/O</h3>
+    This section describes some of the basics of UNIX file I/O - it is a
+    prelude to understanding interprocess communication via pipes (see
+    any
+    UNIX reference book for more details).&nbsp; UNIX promotes
+    device-independent input and output by the use of <span style="font-style: italic;">handles</span>.&nbsp;
+    This
+    means that handles are used for many different types of I/O (e.g.
+    files,
+    pipes, sockets, physical devices).&nbsp; A handle is also known as a
+    file descriptor, which is basically an integer index into a table of
+    entries, each of which is associated with a file or device.&nbsp;
+    Each
+    process is initially given the file descriptors 0, 1, 2 (accessible via
+    the <b><tt>fileno()</tt></b>
+    function call or the macros STDIN_FILENO, STDOUT_FILENO,
+    STDERR_FILENO).&nbsp; These file descriptors correspond to standard
+    input (keyboard), standard output (display), and standard error
+    (unbuffered display).&nbsp; The file descriptor table for a process
+    initially looks like this: <br>
+    &nbsp;
+    <center>
+      <table border="1" width="24%">
+        <tbody>
+          <tr>
+            <td>&nbsp;[0]</td>
+            <td>standard input</td>
+          </tr>
+          <tr>
+            <td>&nbsp;[1]</td>
+            <td>standard output</td>
+          </tr>
+          <tr>
+            <td>&nbsp;[2]</td>
+            <td>standard error</td>
+          </tr>
+        </tbody>
+      </table>
+    </center>
+    <p>UNIX also permits file redirection, by modifying an entry in the
+      file descriptor table.&nbsp; Suppose the process that owns the
+      above
+      table is executing the "ls" utility, and its output is redirected
+      to a
+      file as in:&nbsp; "<tt>ls &gt; directory.txt</tt>".&nbsp; Then its
+      file
+      descriptor table would now appear as: <br>
+      &nbsp; </p>
+    <center>
+      <table border="1" width="33%">
+        <tbody>
+          <tr>
+            <td>&nbsp;[0]</td>
+            <td>standard input</td>
+          </tr>
+          <tr>
+            <td>&nbsp;[1]</td>
+            <td>WRITE directory.txt</td>
+          </tr>
+          <tr>
+            <td>&nbsp;[2]</td>
+            <td>standard error</td>
+          </tr>
+        </tbody>
+      </table>
+    </center>
+    <p>indicating
+that the normal stdout (to the display) is instead being written to the file
+"directory.txt".</p><p>This redirection can also be performed from
+within a program by using the <b><tt>dup2()</tt></b> system call, which closes an existing file
+      descriptor and points it at the same file as another file
+      descriptor
+      (see the man pages for details). &nbsp;As its name implies, <span style="font-family: monospace; font-weight: bold;">dup2</span> is used to copy or duplicate a file handle. &nbsp;The file redirection described above is implemented in the shell by using <span style="font-family: monospace; font-weight: bold;">dup2()</span>.</p><p><span style="text-decoration: underline;">Basic I/O-related System Calls</span> </p>
+    <p>Most UNIX I/O can be performed using the system calls <b><tt>open()</tt></b>,<b><tt>close()</tt></b>,<b><tt>read()</tt></b>,
+      and <b><tt>write()</tt></b>.&nbsp; A file is opened by giving its
+      name, the mode (read/write), and file permissions (if you are
+      creating
+      it).&nbsp; The associated file descriptor is returned. &nbsp;For example: </p>
+    <p><font face="Courier New,Courier">&nbsp; fd = open("input.dat",
+        O_RDONLY);</font> <br>
+      or <br>
+      &nbsp;&nbsp;&nbsp;<font face="Courier New,Courier"> fd =
+        open("record.dat", O_RDWR | O_CREAT, 0644);</font> </p>
+    <p>A file is closed by giving its file descriptor as the only
+      argument:
+    </p>
+    <p><font face="Courier New,Courier">&nbsp; close(fd);</font> </p>
+    <p>Input and output (reading/writing) are symmetric system calls: </p>
+    <p>&nbsp;<font face="Courier New,Courier">&nbsp; numRead = read(fd,
+        buffer, bufSize);</font> <br>
+      and <br>
+      &nbsp;&nbsp;&nbsp;<font face="Courier New,Courier"> numSent =
+        write(fd,
+        buffer, bufSize);</font> </p>
+    <p>Familiarize yourself with the use of the <font face="Courier
+        New,Courier">open()</font>, <font face="Courier New,Courier">close()</font>,
+      <font face="Courier New,Courier">read()</font>, <font face="Courier New,Courier">write()</font>, and <font face="Courier New,Courier">dup2()</font> system calls. </p>
+    <p><b>Answer the following questions:</b> </p>
+    <ul>
+      <li> suppose a process has used <font face="Courier New,Courier">dup2()</font>
+        to make its standard output point to a file named <tt>temp</tt>.&nbsp;
+The
+        process then issues a <span style="font-family: monospace;">fork()</span>
+        system call to spawn a child.&nbsp; The child code issues an <span style="font-family: monospace;">exec()</span> system call to
+        execute a
+        different program.<br>
+      </li>
+    </ul>
+    <ol start="3">
+      <li> where does the standard output of the child process go?&nbsp;
+        Explain.<br>
+      </li>
+    </ol>
+    
+    <ul>
+      <li> suppose a process issues a <span style="font-family: monospace;">fork()</span>
+        system call to spawn a child process. &nbsp;The parent then uses <font face="Courier
+          New,Courier">dup2()</font>
+        to make its standard output point to a file named <tt>temp</tt>.&nbsp;
+The
+        child code issues an <span style="font-family: monospace;">exec()</span>
+        system call to execute a different program. </li>
+    </ul>
+    <ol start="4">
+      <li> where does the standard output of the child process go?&nbsp;
+        Explain.</li>
+    </ol>
+    <h3>&nbsp;&nbsp;<br>
+    </h3>
+    <h3> Pipes</h3>
+    The <b><tt>pipe()</tt></b> system call creates a unidirectional
+    communication buffer space managed by the operating system.&nbsp; It
+    also initializes two file descriptors - one associated with each end
+    of
+    the pipe (the "writing" end and the "reading" end).&nbsp;&nbsp;<span style="font-family: Courier New,Courier,monospace;"></span>This
+is similar to opening a file and getting a file handle back, except
+there is both a reading and a writing handle. &nbsp;Using the <font face="Courier New,Courier">read()</font> and <font face="Courier New,Courier">write()</font>
+system calls, the pipe can be used for communication by connecting a
+process to each end, and proceeding as if you are reading/writing a
+file.&nbsp; Pipe communication is <span style="font-style: italic;">unidirectional</span>;
+so typically one process (the Producer) writes to a pipe and the other
+process (the Consumer) reads from the pipe. &nbsp;Therefore, the writer
+closes their "read" handle, and the reader closes their "write" handle.<br><br>Note: redirection (as implemented via the <span style="font-family: Courier New,Courier,monospace;">dup2()</span>
+calls in the program below) is not&nbsp;required; i.e. when appropriate, pipe handles can be
+used directly for I/O, just like file handles. &nbsp;It's simply
+convenient in certain cases.<br><br>The
+    following program illustrates the general concept of interprocess
+    communication and many of the system calls discussed in this section of the lab.
+    <p><u>Sample Program 2</u> </p>
+    <p><tt>#include &lt;stdio.h&gt;</tt> <br>
+      <tt>#include &lt;stdlib.h&gt;</tt> <br>
+      <tt>#include &lt;unistd.h&gt;</tt> <br>
+      <tt>#include &lt;string.h&gt;</tt> </p>
+    <p><span style="font-family: monospace;">#define READ 0 </span><br style="font-family: monospace;">
+      <span style="font-family: monospace;"> #define WRITE 1 </span><br style="font-family: monospace;">
+      <span style="font-family: monospace;"> #define MAX 1024</span> </p>
+    <p><tt>int main()</tt> <br>
+      <tt>{</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; int fd[2];</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; ssize_t num;</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; pid_t pid;</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; char str[MAX];</tt> </p>
+    <p><tt>&nbsp;&nbsp;&nbsp; if (pipe (fd) &lt; 0) {</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("plumbing
+        problem");</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; }</tt> <br>
+      <b><tt>// point A</tt></b> </p>
+    <p><tt>&nbsp;&nbsp;&nbsp; if ((pid = fork()) &lt; 0) {</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("fork
+        failed");</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; }</tt> <br>
+      <b><tt>// point B</tt></b> </p>
+    <p><tt>&nbsp;&nbsp; else if (!pid) {</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dup2 (fd[WRITE],
+        STDOUT_FILENO);</tt> <br>
+      <b><tt>// point C</tt></b> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; close (fd[READ]);</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; close (fd[WRITE]);</tt>
+      <br>
+      <b><tt>// point D</tt></b> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fgets (str, MAX,
+        stdin);</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; write
+        (STDOUT_FILENO,
+        (const void *) str, (size_t) strlen (str) + 1);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit (0);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; }</tt> </p>
+    <p><tt>&nbsp;&nbsp;&nbsp; dup2 (fd[READ], STDIN_FILENO);</tt> <br>
+      <b><tt>// point C</tt></b> <br>
+      <tt>&nbsp;&nbsp;&nbsp; close (fd[READ]);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; close (fd[WRITE]);</tt> <br>
+      <b><tt>// point D</tt></b> <br>
+      <tt>&nbsp;&nbsp;&nbsp; num = read (STDIN_FILENO, (void *) str,
+        (size_t)&nbsp; sizeof (str));</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; if (num &gt; MAX) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("pipe read error\n");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp; &nbsp; puts (str);</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp; return 0;</tt> <br>
+      <tt>}</tt> </p>
+    <p><b>Perform the following and answer the questions:</b> </p>
+    <ul>
+      <li> study, compile and run Sample Program 2</li>
+    </ul>
+    <ol start="5">
+      <li> what <i>exactly</i> does the program do (i.e. describe its
+        high-level functionality)?</li>
+      <li>create
+a diagram that visually describes the input/output structure of the
+executing program. &nbsp;Show processes and handles as in the pipe
+example diagrammed in class; show the file descriptor table as
+presented above in the File I/O section::</li>
+    </ol>
+    <ul start="5">
+      <ul start="5">
+        <li> at point A (after the pipe is created)</li>
+        <li> at point B (after the parent forks)</li>
+        <li> at point C (after the parent and child have duplicated
+          descriptors)</li>
+        <li> at point D (after parent and child have closed descriptors)&nbsp;</li>
+      </ul>
+    </ul>The figure below shows the expected diagram at point A. &nbsp;You should submit a total of 4 diagrams.
+    <h3 style="text-align: center;">&nbsp;&nbsp;<img style="width: 303px; height: 241px;" alt="" src="Process-Pipe.png"></h3>
+    <h3><br></h3><h3>Lab Programming Assignment (Communicating Processes)</h3>
+Interprocess communication of some sort occurs in most significant
+programming projects.&nbsp; Asynchronous communication is an IPC
+technique often used in systems programming, where processes must be
+able to respond to a variety of possible inputs and events.&nbsp; For
+example, a child process may need to communicate to its parent that
+some condition has occurred, or not. &nbsp;Experiment with asynchronous
+IPC by writing the following program that demonstrates the use of
+signals for simple communication.<br><span style="font-weight: bold;"></span><ul>
+      <li> write a parent program that:</li>
+      <ul>
+        <li> spawns off a child process</li><li>installs signal handler(s) for&nbsp;the two <span style="font-style: italic;">user-defined</span>
+          signals (<span style="font-family: Courier New,Courier,monospace;">SIGUSR1/SIGUSR2</span>)</li>
+        
+        <li> when a user-defined signal is received, it reports the type of signal sent</li><ul><li>note: it may be necessary to reinstall your signal
+    handler after a signal is received</li></ul>
+        <li>terminates gracefully upon receiving a Control-C<br>
+        </li>
+      </ul>
+      <li> the child process should repeatedly:</li>
+      <ul>
+        <li> wait a random amount of time (e.g. one to five seconds)</li>
+        <li> randomly send one of the two user-defined signals to its parent</li>
+      </ul>
+    </ul><p>The
+program that produced the sample output listed below begins by spawning
+a child process. &nbsp;It then reports the identity of any signal that
+is sent to it at random times by its child. &nbsp;Finally, the main
+program is&nbsp;terminated and shutdown gracefully via an interrupt
+(Control-C) sigHandler. </p>
+    
+    <p><u>Sample Output:</u></p><p><tt>[eos12:~/cs452]$ a.out<br>spawned child PID# 19772<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR2 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR1 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR2 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR2 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR1 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR2 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR1 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR1 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR1 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; received a SIGUSR1 signal<br>waiting...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ^C received.&nbsp; That's it, I'm shutting you down...<br>[eos12:~/cs452]$<br></tt></p><h3><br></h3><h3>Extra Credit</h3>Because it is more reliably implemented across different versions, the&nbsp;<span style="font-weight: bold;"></span>POSIX <span style="font-family: monospace; font-weight: bold;">sigaction()</span>
+        mechanism is generally preferred over the simpler ANSI <span style="font-family: monospace; font-weight: bold;">signal()</span>
+        functions. &nbsp;It operates similarly. &nbsp;Research&nbsp;the <span style="font-family: monospace; font-weight: bold;">sigaction()</span> API, and use it&nbsp;to write a similar "Communicating Processes" program, but with the following modifications:<br><ul><li> write a parent program that:</li><ul><li> spawns off <span style="font-style: italic;">two</span> child processes</li><li>installs signal handler(s) for each of the&nbsp;<span style="font-style: italic;">user-defined</span>
+          signals</li><li> when a user-defined signal is received, it reports the type of signal sent, and the identity (PID) of the process that sent it</li><li>terminates gracefully upon receiving a Control-C<br>
+        </li></ul><li> each child process should repeatedly:</li><ul><li> wait a random amount of time (e.g. one to five seconds)</li><li> randomly send one of the two user-defined signals to its parent</li></ul></ul><span style="font-weight: bold;"><br>Note</span>: &nbsp;Extra Credit assignments are to be completed <span style="font-style: italic;">in addition to</span>, not in place of, the regular assignment.<br><br>
+  </body></html>
