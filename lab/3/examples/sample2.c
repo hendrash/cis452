@@ -32,8 +32,8 @@ int main()
         close (fd[READ]);
         close (fd[WRITE]);
 // point D
-        fgets (str, MAX, stdin);
-        write (STDOUT_FILENO, (const void *) str, (size_t) strlen (str) + 1);
+	fgets (str, MAX, stdin);
+	write (STDOUT_FILENO, (const void *) str, (size_t) strlen (str) + 1);
         exit (0);
     }
 

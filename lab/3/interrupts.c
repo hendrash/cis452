@@ -1,65 +1,79 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <signal.h>
-void sigHandler(int);
+#include <string.h>
+#include<signal.h>
+#define READ 0
+#define WRITE 1
+#define MAX 1024
+void parent(int *);
+void child(int *);
 
-int main(){
+	char str[MAX];
+int main()
+{
+	int fd[2];
+	ssize_t num;
+	pid_t pid;
 
-pid_t pid;
-int fd[2];
+	if (pipe (fd) < 0) {
+		perror ("plumbing problem");
+		exit(1);
+	}
+	// point A
 
-    if (pipe (fd) < 0) {
-        perror ("Error creating pipe");
-        exit(1);
-    }
+	if ((pid = fork()) < 0) {
+		perror ("fork failed");
+		exit(1);
+	}
+	// point B
 
-if((pid=fork()) < 0){
-	perror("forking error");
-} else if (pid) { //parent's code
+	else if (pid) {
+		child(fd);
+	}
+	else{
+		parent(fd);	
+}
+	return 0;
+}
 
-	//redirect parent to read in from the pipe
-    dup2 (fd[READ], STDIN_FILENO);
-    close (fd[READ]);
-    close (fd[WRITE]);
-	
-	printf("\nspawned child PID# %i\n", pid);
-	signal(SIGINT,sigHandler);
-	signal(SIGUSR1, sigHandler);
-	signal(SIGUSR2, sigHandler);
-	printf("waiting...");
-	sleep();
-	
-} else { //child's code
-	
-	//redirect child to write into the pipe
-	dup2 (fd[WRITE], STDOUT_FILENO);
-	close (fd[READ]);
-	close (fd[WRITE]);
-
-	while(1) {
-		//sleep for 1-5 random seconds
-		//int randomTime = rand() %5 + 1;
-		//sleep(randomTime);
+void parent(int * pipe){
+		// Parent
+		dup2 (pipe[WRITE], STDOUT_FILENO);
+		// point C
+		close (pipe[READ]);
+		close (pipe[WRITE]);
+		// point D
+		strcpy(str,"signal one");
+		write (STDOUT_FILENO, (const void *) str, (size_t) strlen (str) + 1);
 		
-		//TODO generate signals and write them into the pipe
-	}
+
+		exit (0);
 	
 }
-
+void child(int * pipe){
+		dup2 (pipe[READ], STDIN_FILENO);
+		// point C
+		close (pipe[READ]);
+		close (pipe[WRITE]);
+		// point D
+		int num = read (STDIN_FILENO, (void *) str, (size_t)  sizeof (str));
+		
+		if (num > MAX) {
+			perror ("pipe read error\n");
+			exit(1);
+		}
+		puts (str);
 
 }
 
-void sigHandler(int sigNum){
-	
-	if(sigNum == 2) {
-		sleep(1);
-		printf("\nAll processes ending\n");
-		exit(0);
-	} else if (sigNum == 10) {
-		printf("received a SIGUSR1 signal")
-	} else if (sigNum == 12) {
-		printf("received a SIGUSR2 signal")
+void handler(int sig){
+if(sig==SIGUSR1){
+  printf("received a SIGUSER1 signal. signal Id: %d  \n", sig);
+
 	}
+if(sig==SIGUSR2){
+  printf("received a SIGUSER2 signal signal Id: %d \n", sig);
+
+}
 }
