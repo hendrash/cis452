@@ -1,9 +1,11 @@
-#include<stdio.h>
-#include<signal.h>
-#include<sys/wait.h>
-#include<errno.h>
-#include<unistd.h>
-#include<stdlib.h>
+#define _POSIX_SOURCE
+#include <stdio.h>
+#include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
 void handler(int signal);
 void errorChecker();
 void quit();
@@ -12,9 +14,9 @@ int main(){
 	int sig, slp;
 	pid1=getpid();
 	printf("Parent pid=%d\n", pid1);
-	if(pid2=fork()==0)//child
+	if((pid2=fork())==0)//child
 	{
-		printf("Child pid =%d\n", pid1);
+		printf("Child pid =%d\n", pid2);
 	while(1){	
 		sig=rand() % 2;
 		slp=rand()%5+1;	
@@ -71,7 +73,7 @@ void handler(int signo){
 	return;
 }
 
-void quit(int sigNum){
+void quit(){
 if(pid1==getpid()){
 //parent;
 printf("\nending program .... \n");
