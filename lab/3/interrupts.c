@@ -1,79 +1,85 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
+#include<stdio.h>
 #include<signal.h>
-#define READ 0
-#define WRITE 1
-#define MAX 1024
-void parent(int *);
-void child(int *);
+#include<sys/wait.h>
+#include<errno.h>
+#include<unistd.h>
 
-	char str[MAX];
-int main()
-{
-	int fd[2];
-	ssize_t num;
-	pid_t pid;
+void handler(int signal);
+void errorChecker();
+int i, pid1, pid2, status;
+int main(){
+	int exit_status;
+	errorChecker();
+	pid1=getpid();
+	printf("Parent pid =%d\n", pid1);
+	if((pid2=fork())==0)
+	{
+		//child
+		printf("Child pid = %d\n", getpid());
 
-	if (pipe (fd) < 0) {
-		perror ("plumbing problem");
-		exit(1);
-	}
-	// point A
-
-	if ((pid = fork()) < 0) {
-		perror ("fork failed");
-		exit(1);
-	}
-	// point B
-
-	else if (pid) {
-		child(fd);
+		printf("Child: sending parent SIGUSR1\n");
+		kill(pid1, SIGUSR1);
+		for(;;);
 	}
 	else{
-		parent(fd);	
-}
-	return 0;
-}
-
-void parent(int * pipe){
-		// Parent
-		dup2 (pipe[WRITE], STDOUT_FILENO);
-		// point C
-		close (pipe[READ]);
-		close (pipe[WRITE]);
-		// point D
-		strcpy(str,"signal one");
-		write (STDOUT_FILENO, (const void *) str, (size_t) strlen (str) + 1);
-		
-
-		exit (0);
-	
-}
-void child(int * pipe){
-		dup2 (pipe[READ], STDIN_FILENO);
-		// point C
-		close (pipe[READ]);
-		close (pipe[WRITE]);
-		// point D
-		int num = read (STDIN_FILENO, (void *) str, (size_t)  sizeof (str));
-		
-		if (num > MAX) {
-			perror ("pipe read error\n");
-			exit(1);
+		//parent
+		wait(&status);
+		if(WIFEXITED(status)){
+			exit_status=WEXITSTATUS(status);
+			if(exit_status>128)
+			{
+				exit_status-=256;
+			}
+			printf("Child return - %d\n", WEXITSTATUS(status));
 		}
-		puts (str);
-
-}
-
-void handler(int sig){
-if(sig==SIGUSR1){
-  printf("received a SIGUSER1 signal. signal Id: %d  \n", sig);
+		if(WIFSIGNALED(status))
+		{
+			printf("Child died on signal - %d\n", WTERMSIG(status));	
+		}
 
 	}
-if(sig==SIGUSR2){
-  printf("received a SIGUSER2 signal signal Id: %d \n", sig);
-
+	return 0;
 }
+void errorChecker(){
+	if(signal(SIGUSR1, handler)==SIG_ERR)
+	{
+		printf("Parent: Unable to create handler for SIGUSR1\n");
+	}
+	if(signal(SIGUSR2, handler)==SIG_ERR)
+	{
+		printf("Parent: Unable to create handler for SIGUSR2\n");
+	}
+	return;
+}
+
+void handler(int signal){
+	switch(signal)
+	{
+		case SIGUSR1:
+			printf("Process %d: received SIGUSR1 \n",getpid());
+			if(pid1==getpid()) //parent
+			{
+				printf("Process %d is passing SIGUSR1 to %d ...\n",getpid(),pid2);
+				kill(pid2, SIGUSR1);
+			}
+			else{ // child
+				printf("Process %d is passing SIGUSR2 to itself ...\n",getpid());
+				kill(getpid(), SIGUSR2);
+			}	
+			break;
+		case SIGUSR2:
+			printf("Process %d: received SIGUSR2 \n", getpid());
+			if(pid1==getpid())//parent
+			{
+				printf("Process %d is passing SIGUSR2 to %d ..\n", getpid(), pid2);
+				kill(pid2, SIGUSR2);
+			}else{//child
+				printf("Process %d will terminate itself using SIGINT\n",getpid());
+				kill(getpid(), SIGINT);
+				break;
+			}
+		default:
+			break;
+	}
+	return;
 }
