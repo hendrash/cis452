@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <sys/wait.h>
 #include <errno.h>
-
+#include <unistd.h>
 static void signal_handler(int);
 int i, pid1, pid2, status;
 
