@@ -6,16 +6,10 @@
 #include<stdlib.h>
 void handler(int signal);
 void errorChecker();
+void quit();
 int i, pid1, pid2, status;
 int main(){
 	int sig, slp;
-	// Installing signal handlers 
-	if(signal(SIGUSR1, handler)==SIG_ERR){
-		printf("Unable to install a signal handler for SIGUSR1\n");
-	}
-	if(signal(SIGUSR2, handler)==SIG_ERR){
-		printf("Unable to install a signal handler for SIGUSR2\n");
-	}
 	pid1=getpid();
 	printf("Parent pid=%d\n", pid1);
 	if(pid2=fork()==0)//child
@@ -26,20 +20,33 @@ int main(){
 		slp=rand()%5+1;	
 			
 		if(sig==1){
-
 		printf("Child: sending parent SIGUSR1 ..........");
+		fflush(stdout);
 		kill(pid1, SIGUSR1);
 		sleep(slp);	
 		}
 		else{
 		printf("Child: sending parent SIGUSR2 ..........");
+		fflush(stdout);
 		kill(pid1, SIGUSR2);
 		sleep(slp);
 		}
 	}
 	
 	}
-	else{//parent
+	else{
+		if(signal(SIGINT, quit)==SIG_ERR){
+		printf("Unable to install a signal hander for SIGINT\n");		
+		}
+		// Installing signal handlers 
+	if(signal(SIGUSR1, handler)==SIG_ERR){
+		printf("Unable to install a signal handler for SIGUSR1\n");
+	}
+	if(signal(SIGUSR2, handler)==SIG_ERR){
+		printf("Unable to install a signal handler for SIGUSR2\n");
+	}
+	
+		//parent 
 		wait(&status);
 		for(;;);
 	}
@@ -62,6 +69,20 @@ void handler(int signo){
 
 
 	return;
+}
+
+void quit(int sigNum){
+if(pid1==getpid()){
+//parent;
+printf("\nending program .... \n");
+exit(0);
+}
+else{
+fflush(stdout);
+	printf("...");	
+sleep(1);
+exit(0);
+}
 }
 
 
