@@ -14,6 +14,7 @@ getFile();
 void getFile(){
 	string fileName;
 	cout <<"Enter in a file name .... \n";
+	
 	cin >> fileName;
 	cout <<	returnFile(fileName);	
 }
