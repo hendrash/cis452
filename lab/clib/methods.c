@@ -1,3 +1,4 @@
+#include "header.h"
 #include <dirent.h>
 int cmpstr(char* str1, char* str2){
 	int i =0;
@@ -14,12 +15,12 @@ char * content=(char *)malloc(sizeof(char)*2048);
 memset(content,0,sizeof(content));
 int i=0;
 int c=0;
-dir *d;
+DIR *d;
 struct dirent *dir;
 d=opendir(".");
 if(d){
 	strcat(content, "\n");
-	while ((dir =readdir(d)) != null)
+	while ((dir =readdir(d)) != NULL)
 	{
 		strcat(dir->d_name," 	 ");
 		strcat(content,dir->d_name);
@@ -36,26 +37,26 @@ if(d){
 return content;
 }
 
-void writetofile(char* file, char* data){
-file *outfile;
+void writeTofile(char* file, char* data){
+FILE *outfile;
 outfile=fopen(file, "w");
 fprintf(outfile, "%s\n", data);
 fclose(outfile);
 }
 
-char* readfile(char file[]){
- file *fp;
+char* readFile(char file[]){
+ FILE *fp;
     
 char* temp=(char *)malloc(sizeof(char)*2048);
 char* str=(char *)malloc(sizeof(char)*2048);
 memset(str,0,sizeof(str));
 unsigned i=0;
     fp = fopen(file, "r");
-    if (fp == null){
-        printf("could not open file %s",file);
-        return null;
+    if (fp == NULL){
+        printf("Could not open file %s",file);
+        return NULL;
     }
-    while (fgets(temp, 2048, fp) != null){
+    while (fgets(temp, 2048, fp) != NULL){
         printf("%s", temp);
 	strcat(str, temp);
     }
@@ -72,23 +73,23 @@ int i=0;
 	}
 	return s;
 }
-unsigned countwords(char* str)
+unsigned countWords(char* str)
 { 
     unsigned i =0;
     unsigned wc = 0;  // word count
 
-    // scan all characters one by one
+    // Scan all characters one by one
     while (*str!='\n')
     {
-        // if next character is a separator, set the
-        // state as out
+        // If next character is a separator, set the
+        // state as OUT
         if (*str == ' ' || *str == '\000' || *str == '\t')
 	wc++;
-        // if next character is not a word separator and
-        // state is out, then set the state as in and
+        // If next character is not a word separator and
+        // state is OUT, then set the state as IN and
         // increment word count
 
-        // move to next character
+        // Move to next character
         ++str;
     }
 

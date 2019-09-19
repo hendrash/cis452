@@ -2,20 +2,25 @@
 #include<thread>
 #include<mutex>
 #include<unistd.h>
+
+#define NUM_THREADS 10
+
 using namespace std;
 mutex mtx;
 string returnFile(string fname);
 void getFile();
 
 int main(){
-getFile();
+while(1)
+	getFile();
 }
 
 void getFile(){
+	pthread_t thread[NUM_THREADS];
 	string fileName;
 	cout <<"Enter in a file name .... \n";
-	
 	cin >> fileName;
+	
 	cout <<	returnFile(fileName);	
 }
 
