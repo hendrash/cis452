@@ -4,12 +4,14 @@
 #include<unistd.h>
 #include <signal.h>
 
-#define NUM_THREADS 10
+#define NUM_THREADS 100
 
 using namespace std;
 mutex mtx;
 double totalAccessTime;
 int numTimesAccessed;
+int counter = 0;
+pthread_t threads[NUM_THREADS];
 string returnFile(string fname);
 void getFile();
 
@@ -29,13 +31,12 @@ int main(){
 
 void getFile(){
 	
-	pthread_t thread[NUM_THREADS];
 	string fileName;
 	cout <<"Enter in a file name .... \n";
 	cin >> fileName;
 	
 	//Creates thread and assigns it to execute the returnFile function with fileName as an argument
-	if ((status = pthread_create (&thread1, NULL,  returnFile, fileName)) != 0) {
+	if ((status = pthread_create (&threads[counter], NULL,  returnFile, fileName)) != 0) {
         cerr << "thread create error: " << strerror(status) << endl;
         exit (1);
     }
@@ -57,17 +58,22 @@ string returnFile(string fname){
 		mtx.lock();
 		++totalAccessTime;
 		++numTimesAccessed;
-		mtx.unlock();
 		cout <<"retrieved file " + fname+" from database successfully\n");
-
+		++counter;
+		mtx.unlock();
 	}
 	
-	//When user enters ^C, print final stats before exiting the program
-	void my_handler(int num) {
-		
-		cout <<"Total number of file requests received: " + numTimesAccessed;
-		cout <<"Average file access time: " + (totalAccessTime / numTimesAccessed);
-		exit(0);
-	}
+	//Once the current thread has finished its work, it needs to detech from the parent thread and then properly end itself
+	pthread_detach(pthread_self());
+	pthread_exit(NULL); 
+}	
+	
+//When user enters ^C, print final stats before exiting the program
+void my_handler(int num) {
+	
+	cout <<"Total number of file requests received: " + numTimesAccessed;
+	cout <<"Average file access time: " + (totalAccessTime / numTimesAccessed);
+	exit(0);
 }
+
 
