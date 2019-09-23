@@ -15,7 +15,8 @@ mutex mtx;
 double totalAccessTime;
 int numTimesAccessed;
 int counter = 0;
-pthread_t threads[NUM_THREADS]; 
+pthread_t threads[NUM_THREADS];
+string fileName; 
 
 void *returnFile(void* arg);
 void getFile();
@@ -37,7 +38,6 @@ int main(){
 
 void getFile(){
 	
-	string fileName;
 	cout <<"Enter in a file name .... \n";
 	cin >> fileName;
 	int status;
@@ -51,10 +51,7 @@ void getFile(){
 
 void *returnFile(void* arg){
 	
-	string *fileName = static_cast<std::string*>(arg);
-	cout <<"file location" << fileName << endl;
-	string fname = *fileName;
-		cout <<"file name " << fname << endl;
+	string fname = *reinterpret_cast<std::string*>(arg);
 	
 	if(rand()%11>7){
 		int sleepTime=7+rand()%4;
@@ -84,7 +81,7 @@ void *returnFile(void* arg){
 //When user enters ^C, print final stats before exiting the program
 void my_handler(int num) {
 	
-	cout <<"Total number of file requests received: " + std::to_string(numTimesAccessed) + "\n";
+	cout <<" Total number of file requests received: " + std::to_string(numTimesAccessed) + "\n";
 	cout <<"Average file access time: " + std::to_string((totalAccessTime / numTimesAccessed)) + "\n";
 	exit(0);
 }
