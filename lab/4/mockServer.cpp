@@ -11,7 +11,7 @@ mutex mtx;
 double totalAccessTime;
 int numTimesAccessed;
 int counter = 0;
-pthread_t threads[NUM_THREADS];
+pthread_t threads[NUM_THREADS]; 
 string returnFile(string fname);
 void getFile();
 
@@ -49,8 +49,10 @@ string returnFile(string fname){
 		mtx.lock();
 		totalAccessTime += sleepTime;
 		++numTimesAccessed;
+		++counter;
 		mtx.unlock();
 		sleep(sleepTime);
+		cout <<"retrieved file " + fname+" from database successfully\n");
 		return fname;
 	}
 	else{
@@ -58,9 +60,9 @@ string returnFile(string fname){
 		mtx.lock();
 		++totalAccessTime;
 		++numTimesAccessed;
-		cout <<"retrieved file " + fname+" from database successfully\n");
 		++counter;
 		mtx.unlock();
+		cout <<"retrieved file " + fname+" from database successfully\n");
 	}
 	
 	//Once the current thread has finished its work, it needs to detech from the parent thread and then properly end itself
