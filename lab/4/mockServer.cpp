@@ -1,6 +1,10 @@
 #include<iostream>
 #include<thread>
+#include <pthread.h>
+#include <string> 
+#include <stdlib.h>
 #include<mutex>
+#include <errno.h>
 #include<unistd.h>
 #include <signal.h>
 
@@ -12,8 +16,10 @@ double totalAccessTime;
 int numTimesAccessed;
 int counter = 0;
 pthread_t threads[NUM_THREADS]; 
-string returnFile(string fname);
+
+void *returnFile(void* arg);
 void getFile();
+void my_handler(int num);
 
 int main(){
 	
@@ -34,15 +40,21 @@ void getFile(){
 	string fileName;
 	cout <<"Enter in a file name .... \n";
 	cin >> fileName;
-	
+	int status;
+
 	//Creates thread and assigns it to execute the returnFile function with fileName as an argument
-	if ((status = pthread_create (&threads[counter], NULL,  returnFile, fileName)) != 0) {
-        cerr << "thread create error: " << strerror(status) << endl;
+	if ((status = pthread_create (&threads[counter], NULL, returnFile, &fileName)) != 0) {
+        cerr << "thread create error: " << endl;
         exit (1);
     }
 }
 
-string returnFile(string fname){
+void *returnFile(void* arg){
+	
+	string *fileName = static_cast<std::string*>(arg);
+	cout <<"file location" << fileName << endl;
+	string fname = *fileName;
+		cout <<"file name " << fname << endl;
 	
 	if(rand()%11>7){
 		int sleepTime=7+rand()%4;
@@ -52,8 +64,7 @@ string returnFile(string fname){
 		++counter;
 		mtx.unlock();
 		sleep(sleepTime);
-		cout <<"retrieved file " + fname+" from database successfully\n");
-		return fname;
+		cout <<"retrieved file " << fname << " from database successfully" << endl;
 	}
 	else{
 		sleep(1);
@@ -62,7 +73,7 @@ string returnFile(string fname){
 		++numTimesAccessed;
 		++counter;
 		mtx.unlock();
-		cout <<"retrieved file " + fname+" from database successfully\n");
+		cout <<"retrieved file " << fname  << " from database successfully" << endl;
 	}
 	
 	//Once the current thread has finished its work, it needs to detech from the parent thread and then properly end itself
@@ -73,8 +84,8 @@ string returnFile(string fname){
 //When user enters ^C, print final stats before exiting the program
 void my_handler(int num) {
 	
-	cout <<"Total number of file requests received: " + numTimesAccessed;
-	cout <<"Average file access time: " + (totalAccessTime / numTimesAccessed);
+	cout <<"Total number of file requests received: " + std::to_string(numTimesAccessed) + "\n";
+	cout <<"Average file access time: " + std::to_string((totalAccessTime / numTimesAccessed)) + "\n";
 	exit(0);
 }
 
