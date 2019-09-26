@@ -12,6 +12,14 @@
 
 using namespace std;
 
+typedef struct Dataset{
+	int writerTurn;
+	string userInput;
+}Dataset;
+
+Dataset* sharedMemory;
+const int shared_segment_size = sizeof(Dataset);
+	
 void my_handler(int num);
 
 int main(){
@@ -21,23 +29,28 @@ int main(){
 	sigIntHandler.sa_handler = my_handler;
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags = 0;
-
     sigaction(SIGINT, &sigIntHandler, NULL);
-	
+		
 	// ftok to generate unique key 
-    key_t key = ftok("shmfile",65); 
-  
+    key_t key = ftok("shmfile",65);
+	
     // shmget returns an identifier in shmid 
-    int shmid = shmget(key,1024,0666|IPC_CREAT); 
+    int shmid = shmget(key,shared_segment_size,IPC_CREAT); 
+	
+	//Attach struct to shared memory
+	sharedMemory = (Dataset* ) shmat (shmid, 0, 0);
+		
   
     // shmat to attach to shared memory 
-    char *str = (char*) shmat(shmid,(void*)0,0); 
+    //char *str = (char*) shmat(shmid,(void*)0,0); 
 	
 	while(1) {
-			cout<<"Please provide data to be written into shared memory: "; 
-			gets(str); 
-			printf("Data written into memory: %s\n",str); 
-			sleep(1);
+		//gets(str);
+		cout << "Please provide data to be written into shared memory: ";
+		cin >> sharedMemory.userInput;			
+		printf("Data written into memory: %s\n",sharedMemory.userInput); 
+		sharedMemory.writerTurn = 0;
+		sleep(1);
 	}
 
 }
@@ -47,7 +60,7 @@ int main(){
 void my_handler(int num) {
 	
     //detach from shared memory  
-    shmdt(str);
+    shmdt(sharedMemory);
 	exit(0);
 }
 
