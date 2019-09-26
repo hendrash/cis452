@@ -1,0 +1,286 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html lang="en-us"><head>
+    <meta http-equiv="Content-Type" content="text/html;
+      charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Mozilla/4.79 [en] (Win98; U)
+      [Netscape]">
+    <title>gw's CS 452 Lab</title></head>
+<body style="direction: ltr;" bgcolor="#ffffff">
+    <center>
+      <h2> CS 452 Lab: &nbsp;Week 5<br>
+        Managing Shared Memory</h2>
+    </center>
+    
+    <hr>
+    <h3> Overview</h3>
+    The purpose of this assignment is to become familiar with the
+    methods
+    used to enable processes to create and access shared memory (as you recall, a form of InterProcess Communication).&nbsp;
+    The
+    UNIX IPC package will be investigated as the mechanism for
+    implementing
+    a multiple-process project that communicates via shared
+    memory.&nbsp;&nbsp; Of course, whenever executing entities share
+    data,
+    it poses an instance of the Critical Section problem.&nbsp; The
+    programming assignment suggests a simple synchronization method to
+    solve
+    this problem.<br>
+    <h3></h3>
+    <h3> Activities</h3>
+    <ul>
+      <li> This is a group project.&nbsp; Work your way through the
+        following exercises, demonstrating your knowledge of the
+        material by
+        answering the numbered questions.</li>
+      <li>Write a short program that utilizes shared memory.<br>
+      </li>
+      <li>
+Submit a detailed lab report</li><ul><li>include the answers to the numbered
+questions</li><li>include&nbsp;your source code</li><li>Note: since the solution is dynamic,&nbsp;you do <span style="font-style: italic;">not</span> need to submit
+hardcopy sample output for this programming assignment.</li></ul><li>Be prepared to demo your
+solution. 
+      </li>
+    </ul>
+    <h3>&nbsp;<br>
+    </h3>
+    <h3> Shared Memory</h3>
+    One of the interprocess communication (IPC) methods mentioned in
+    class
+    was the use of shared memory.&nbsp; Because of its speed of access
+    (as
+    opposed to say, files or sockets), it is a useful tool for
+    application
+    programmers.&nbsp; This is why shared memory is commonly supported by
+    modern operating systems and utilized in many advanced applications.&nbsp; However, shared data presents users
+    with an instance of what is called the Critical Section
+    problem (more on this in a future lab).
+    <p>Normally, each process has its own unique address space.&nbsp;
+      The
+      purpose of shared memory is to allow processes to communicate by
+      sharing
+      the <span style="font-style: italic;">same</span> data area.&nbsp; Each process still has its own data
+      segment,
+      but with an additional shared segment mapped into its virtual
+      address
+      space.&nbsp; Processes may access this shared segment only via
+      pointers; this is known as anonymous memory.&nbsp; The reading and modifying of memory, and hence
+      process
+      communication, occurs in the usual manner but with pointers.<br>
+    </p>
+    <p>This lab is concerned with the access mechanism itself:&nbsp;
+      learning to
+      use the system calls that implement and manage shared
+      memory.&nbsp;
+      Since shared memory is a kernel resource, programs that use it
+      should
+      adhere to the established resource usage pattern: request, use,
+      release.&nbsp; For shared memory specifically, the resource usage
+      paradigm is expressed as follows: </p>
+    <ol type="a">
+      a)&nbsp; create a shared memory region <br>
+      b)&nbsp; attach the shared memory segment to a process' address
+      space <br>
+      &nbsp;&nbsp;&nbsp;&nbsp; // <i>use the shared memory correctly</i>
+      <br>
+      c)&nbsp; detach the shared memory region from a process' address
+      space<br>
+      d)&nbsp; remove the kernel resource data structure
+    </ol>
+    All of the above steps have an associated system call.&nbsp; (The
+    commented step is actually the Critical Section - it is under your
+    program control.)&nbsp; The system calls corresponding to the above
+    steps are:
+    <blockquote>a)&nbsp; <b><tt>shmget()</tt></b> - this function
+      creates
+      a
+      shared memory segment.&nbsp; It initializes a kernel data
+      structure to
+      manage the resource and returns a resource ID to the user.&nbsp;
+      This
+      ID, or handle, is used by any process wishing to access the shared
+      segment. <br>
+      b)&nbsp; <b><tt>shmat()</tt></b> - attaches the specified shared
+      memory
+      region to the address space of the calling process. <br>
+      c)&nbsp; <b><tt>shmdt() </tt></b>- detaches the specified shared
+      memory region. <br>
+      d)&nbsp; <b><tt>shmctl()</tt></b> - used for controlling the
+      resource.&nbsp; This function has different uses that range from
+      returning information about the shared memory segment to locking
+      the
+      memory.&nbsp; It can also be used to "free" the resource; removing
+      the
+      shared memory segment and its associated data structures from the
+      system.</blockquote>
+    Refer to the man pages for additional details on these
+    functions.&nbsp;
+    You may also find the include files<tt> bits/ipc.h</tt> and <tt>bits/shm.h</tt>
+    useful to reference.
+    <p>The sample code below demonstrates the use of these system
+      calls (i.e. the mechanics of obtaining and using shared memory).&nbsp; Note that this program doesn't really do anything
+      useful -
+      because it
+      doesn't make sense for a single process to use shared memory. </p>
+    <p><u>Sample Program 1</u> </p>
+    <p><tt>#include &lt;stdio.h&gt;</tt> <br>
+      <tt>#include &lt;stdlib.h&gt;</tt> <br>
+      <tt>#include &lt;sys/types.h&gt;</tt> <br>
+      <tt>#include &lt;sys/stat.h&gt;<br>
+        #include &lt;sys/ipc.h&gt;</tt> <br>
+      <tt>#include &lt;sys/shm.h&gt;</tt> </p>
+    <p><tt>#define FOO 4096</tt> </p>
+    <p><tt>int main ()</tt> <br>
+      <tt>{</tt> <br>
+      <tt>&nbsp;&nbsp; int shmId;</tt> <br>
+      <tt>&nbsp;&nbsp; char *shmPtr;</tt> </p>
+    <p><tt>&nbsp;&nbsp; if ((shmId = shmget (IPC_PRIVATE, FOO,
+        IPC_CREAT|S_IRUSR|S_IWUSR)) &lt; 0) {</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("i can't get no..\n");</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit (1);</tt> <br>
+      <tt>&nbsp;&nbsp; }</tt> <br>
+      <tt>&nbsp;&nbsp; if ((shmPtr = shmat (shmId, 0, 0)) == (void*) -1)
+        {</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("can't attach\n");</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit (1);</tt> <br>
+      <tt style="font-family: monospace;">&nbsp;&nbsp; }</tt><br style="font-family: monospace;">
+    </p>
+    <p style="font-family: monospace;">&nbsp;&nbsp; printf ("value a: %p\t value b: %p\n", (void *) shmPtr, (void *) shmPtr + FOO);<br>
+    </p>
+    <tt>&nbsp;&nbsp; if (shmdt (shmPtr) &lt; 0) {</tt> <br>
+    <p><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("just can't let
+        go\n");</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit (1);</tt> <br>
+      <tt>&nbsp;&nbsp; }</tt> <br>
+      <tt>&nbsp;&nbsp; if (shmctl (shmId, IPC_RMID, 0) &lt; 0) {</tt> <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("can't deallocate\n");</tt>
+      <br>
+      <tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit(1);</tt> <br>
+      <tt>&nbsp;&nbsp; }</tt> </p>
+    <p><tt>&nbsp;&nbsp; return 0;</tt> <br>
+      <tt>}</tt> </p>
+    <p><b>Perform the following operations and answer the questions:</b>
+    </p>
+    <ul>
+      <li> compile and run Sample Program 1</li>
+    </ul>
+    <ol>
+      <li> what exactly is being output by Sample Program 1 (i.e. what is the
+        <span style="font-style: italic;">meaning </span>of
+        the output values) ?</li>
+      <li>read the man pages; then describe the meaning / purpose of each argument used by the <b style="font-family: monospace;">shmget()</b> function call.</li><ul><li>notice the use of macros to specify access permissions</li></ul>
+      <li>describe two specific uses of the <span style="font-family: monospace; font-weight: bold;">shmctl()</span>
+        function call</li>
+      <li>read the man pages, then use <span style="font-family: monospace; font-weight: bold;">shmctl()</span> to modify
+        Sample Program 1 so that it prints out the size of the shared
+        memory segment<br>
+      </li>
+    </ol>
+    <h3>&nbsp;<br>
+    </h3>
+    <h3> Useful System Utilities</h3>
+    The system utility "<b><tt>ipcs</tt></b>" (IPC status) displays
+    information about all currently allocated kernel IPC
+    resources.&nbsp;
+    Use the man pages to familiarize yourself with this program.
+    <p>Since shared memory is a kernel resource, it is persistent (i.e.
+      it
+      may remain in the system even after the creating process has
+      terminated).&nbsp; Shared memory is normally deallocated via the <b><tt>shmctl()</tt></b>
+      function, but the system utility "<b><tt>ipcrm</tt></b>" (IPC
+      remove)
+      can also be used when necessary.&nbsp; Use this utility in the
+      event of
+      programming errors.&nbsp; For example, if your program terminates
+      before
+      cleaning up, this utility can be used to free the resources. </p>
+    <p><b>Perform the following operations:</b> </p>
+    <ul>
+      <li> modify the print statement in Sample Program 1 to determine
+        the
+        ID of the shared memory segment</li>
+      <li> insert a <b><tt>pause()</tt></b> after the print statement,
+        recompile and run</li>
+      <li> start a script</li>
+      <li> terminate the Sample Program (<b><tt>^C</tt></b>) and run the
+        <b><tt>ipcs</tt></b>
+        utility</li>
+      <li> use the <b><tt>ipcrm</tt></b> utility to remove the shared
+        memory
+        segment</li>
+      <li> re-run the <b><tt>ipcs</tt></b> utility to verify that it
+        worked</li>
+    </ul>
+    <ol start="5">
+      <li> submit your script</li>
+    </ol>
+    <h3>&nbsp;<br>
+    </h3>
+    <h3>Programming Assignment (Readers and Writer)</h3>
+Process communication using shared memory involves at least two
+processes by definition, often referred to as a Reader and a
+Writer.&nbsp; The programming assignment for this lab is to implement a
+Writer program that creates a shared memory segment, then repeatedly
+accepts an arbitrary user input string from the terminal and writes it
+into shared memory.&nbsp; You must also implement a corresponding
+Reader program; two instances of it will attach to the same shared
+memory segment. &nbsp;The Readers will repeatedly read each new string
+from the shared memory and display the string to the screen.&nbsp; The
+idea is similar to the "echo" command, or to the operation of the pipe
+demo Sample Program in Lab 3, except that your solution must implement <span style="font-style: italic;">two</span>
+Reader processes. &nbsp;In this sense, it functions a little like the
+typescript utility, which sends output to both the display and to a
+file. &nbsp;Your program sends output to two different window displays.<br>
+    <br>
+    Write separate programs for each process type and then run each process
+    in
+    its own terminal window.&nbsp; This clearly and visually demonstrates the
+    communication mechanism involved in using shared memory.<br>
+    <br>
+    <b>Observations:</b>
+    <ul>
+      <li>the
+Writer needs to know that the current string has been displayed, so
+that it may write a new string into shared memory (otherwise it would
+overwrite the first string).&nbsp; The Readers need to know when a new
+string has been written into shared memory, so that they can display it
+(otherwise they would re-display the current string).&nbsp; The solution
+to this problem does not require sophisticated synchronization
+mechanisms such as semaphores or mutexes (the topic of a future lab). &nbsp;You should be able to synchronize for the
+desired behavior with simple elements such as&nbsp;flag(s) and/or turn variables, which must
+also be stored in shared memory so that all processes can access them.&nbsp; Note that the functionality of
+this system constitutes a type of "lockstep" synchronization, which is acceptable
+in this case since that is the desired behavior of the programs (writer goes, then both readers go, then writer goes, etc.).
+      </li>
+      <li>the Readers need to know which segment to attach to.&nbsp; The
+        preferred method is for the Readers and Writer to agree upon a
+        <span style="font-style: italic;">passkey</span> that
+        is used to get access to the resource.&nbsp; See the man pages for
+        information on
+        using the function <b><tt>ftok()</tt></b> (file_to_key), which is used to
+        generate a
+       common key.</li>
+      <li> your programs should conclude with a graceful shutdown,
+        releasing
+        all system resources before terminating (this would be a good use of the <b><tt>signal()</tt></b>
+        mechanism introduced in Lab 3).</li>
+    </ul>
+    <ul>
+      <li> <b>Important:</b> don't lose your shared memory
+        pointer!&nbsp;
+        Otherwise, you will not be able to properly detach.</li>
+    </ul>
+    <h3><br></h3><h3>Extra Credit (Chat Server)</h3>Extend
+your program to function as a Chat Server, albeit one that executes on
+a single machine.<br><br>The basic idea: &nbsp;instead of using one
+writer and two readers, each instantiated process is <span style="font-style: italic;">both</span>
+a writer and a reader. &nbsp;Anything a user types into any process in any terminal window gets
+echoed to all other processes. &nbsp;The functionality is that of a chat server, such as you might have used in an online game.<br><br>Note: this is an O.S. project.
+&nbsp;Your solution must use shared memory for IPC (not sockets).<br><br>Reminder: &nbsp;all extra credit is <span style="font-style: italic;">in addition</span> to the regular assignment, not in place of it.<br><br><br>
+    <ul>
+    </ul>
+  </body></html>
