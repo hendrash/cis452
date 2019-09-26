@@ -4,8 +4,11 @@
 #include <sys/stat.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <signal.h>
+#include <unistd.h>
 #define FOO 4096
 
+void sigHandler(int sigNum);
 int main ()
 {
    int shmId;
@@ -25,6 +28,8 @@ int main ()
       perror ("can't attach\n");
       exit (1);
    }
+
+   signal(SIGINT, sigHandler);
    //modify the print statement in Sample Program 1 to determine the ID of the shared memory segment
    printf ("shared memory Id is %d\n", shmId);
    printf ("value a: %p\t value b: %p\n", (void *) shmPtr, (void *) shmPtr + FOO);
@@ -39,4 +44,7 @@ int main ()
    }
 
    return 0;
+}
+void sigHandler(int sigNum){
+	printf("Exiting good by");
 }

@@ -14,8 +14,8 @@ int main()
 	return 0;
 }
 
-	void
-sigHandler (int sigNum)
+
+void sigHandler (int sigNum)
 {
 	printf (" received an interrupt.\n");
 	// this is where shutdown code would be inserted
