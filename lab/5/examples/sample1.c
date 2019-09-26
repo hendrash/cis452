@@ -29,7 +29,6 @@ int main ()
       exit (1);
    }
 
-   signal(SIGINT, sigHandler);
    //modify the print statement in Sample Program 1 to determine the ID of the shared memory segment
    printf ("shared memory Id is %d\n", shmId);
    printf ("value a: %p\t value b: %p\n", (void *) shmPtr, (void *) shmPtr + FOO);
