@@ -13,10 +13,7 @@
 #define NUM_THREADS 100
 
 using namespace std;
-double totalAccessTime;
-int numTimesAccessed;
-int counter = 0;
-string fileName; 
+int turn = 1; 
 
 
 void my_handler(int num);
@@ -41,7 +38,9 @@ int main(){
     char *str = (char*) shmat(shmid,(void*)0,0); 
 	
 	while(1) {
-		printf("Data read from memory: %s\n",str); 
+		if(turn == 1) {
+			printf("Data read from memory: %s\n",str); 
+		}
 	}       
 
 }

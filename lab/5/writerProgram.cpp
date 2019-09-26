@@ -10,14 +10,7 @@
 #include<unistd.h>
 #include <signal.h>
 
-#define NUM_THREADS 100
-
 using namespace std;
-double totalAccessTime;
-int numTimesAccessed;
-int counter = 0;
-string fileName; 
-
 
 void my_handler(int num);
 
@@ -41,10 +34,10 @@ int main(){
     char *str = (char*) shmat(shmid,(void*)0,0); 
 	
 	while(1) {
-		
-		cout<<"Please provide data to be written into shared memory: "; 
-		gets(str); 
-		printf("Data written into memory: %s\n",str); 
+			cout<<"Please provide data to be written into shared memory: "; 
+			gets(str); 
+			printf("Data written into memory: %s\n",str); 
+			sleep(1);
 	}
 
 }
