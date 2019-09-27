@@ -14,6 +14,7 @@ using namespace std;
 
 typedef struct Dataset{
 	int writerTurn;
+	int numTimesRead;
 	string userInput;
 }Dataset;
 
@@ -40,13 +41,20 @@ int main(){
 	//Attach struct to shared memory
 	sharedMemory = (Dataset* ) shmat (shmid, 0, 0);
 	
+	bool myTurn = true;
 	while(1) {
-		if(!sharedMemory.writerTurn) {
-			printf("Data read from memory: %s\n",sharedMemory.userInput); 
-			if(this is the second process to read out) {
+				
+		if(!sharedMemory.writerTurn && myTurn) {
+			printf("Data read from memory: %s\n",sharedMemory.userInput);
+			sharedMemory.numTimesRead = sharedMemory.numTimesRead + 1;			
+			if(sharedMemory.numTimesRead == 2) {
+				//Reset number of times read for next round
+				sharedMemory.numTimesRead = 0;
 				//Set turn back to writer so it can write again
 				sharedMemory.writerTurn = 1;
+				myTurn = true;
 			}
+			myTurn = false;
 		}
 	} 
 
