@@ -41,7 +41,14 @@ int main(){
 	sharedMemory = (Dataset* ) shmat (shmid, 0, 0);
 	
 	while(1) {
-		printf("Data read from memory: %s\n",sharedMemory.userInput); 
+		if(!sharedMemory.writerTurn) {
+			printf("Data read from memory: %s\n",sharedMemory.userInput); 
+			sharedMemory.numTimesRead = sharedMemory.numTimesRead + 1;
+			if(sharedMemory.numTimesRead >= 2) {
+				sharedMemory.numTimesRead = 0;
+				sharedMemory.writerTurn = 1;
+			}
+		}
 	}       
 
 }

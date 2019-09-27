@@ -46,11 +46,12 @@ int main(){
 	
 	while(1) {
 		//gets(str);
-		cout << "Please provide data to be written into shared memory: ";
-		cin >> sharedMemory.userInput;			
-		printf("Data written into memory: %s\n",sharedMemory.userInput); 
-		sharedMemory.writerTurn = 0;
-		sleep(1);
+		if(sharedMemory.writerTurn) {
+			cout << "Please provide data to be written into shared memory: ";
+			cin >> sharedMemory.userInput;			
+			printf("Data written into memory: %s\n",sharedMemory.userInput); 
+			sharedMemory.writerTurn = 0;
+		}
 	}
 
 }
