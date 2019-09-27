@@ -43,13 +43,12 @@ int main(){
 	while(1) {
 		if(!sharedMemory.writerTurn) {
 			printf("Data read from memory: %s\n",sharedMemory.userInput); 
-			sharedMemory.numTimesRead = sharedMemory.numTimesRead + 1;
-			if(sharedMemory.numTimesRead >= 2) {
-				sharedMemory.numTimesRead = 0;
+			if(this is the second process to read out) {
+				//Set turn back to writer so it can write again
 				sharedMemory.writerTurn = 1;
 			}
 		}
-	}       
+	} 
 
 }
 	

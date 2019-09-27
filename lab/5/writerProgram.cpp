@@ -14,6 +14,9 @@ using namespace std;
 
 typedef struct Dataset{
 	int writerTurn;
+	int readtOneTurn;
+	int readerTwoTurn;
+	bool flag[2] = {false, false};
 	string userInput;
 }Dataset;
 
