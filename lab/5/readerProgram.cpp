@@ -13,7 +13,7 @@
 using namespace std;
 
 typedef struct Dataset{
-	int writerTurn;
+	bool writerTurn;
 	int numTimesRead;
 	string userInput;
 }Dataset;
@@ -25,27 +25,38 @@ void my_handler(int shmid);
 
 int main(){
 	int shmid; 
+	key_t key; 
 	//set up sigHandler to receive ^C signal and call custom signal handler function
+	//Fancy Singal handler
 	struct sigaction sigIntHandler;
 	sigIntHandler.sa_handler = my_handler;
+	/*
+	 * The sigemptyset() function is part of a family of functions that manipulate signal sets. Signal sets are data objects that let 
+	 * a thread keep track of groups of signals. For example, a thread might create a signal set to record which signals it is 
+	 * blocking, and another signal set to record which signals are pending. */
 	sigemptyset(&sigIntHandler.sa_mask);
+	
 	sigIntHandler.sa_flags = 0;
+	
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	// ftok to generate unique key 
-	key_t key = ftok("shmfile",65);
+	if((key = ftok("./",65))<(key_t)1){
+		perror("IPC error: ftok"); 
+		exit(1);
+	}
 
 	// shmget returns an identifier in shmid 
-	if(shmget(key,shared_segment_size,IPC_CREAT)){
+	if((shmid=shmget(key,shared_segment_size,IPC_CREAT))<1){
 		perror("Failed to assign shmid");
+		exit(1);
 	} 
 	//Attach struct to shared memory
 	sharedMemory = (Dataset* ) shmat (shmid, 0, 0);
 
 	bool myTurn = true;
 	while(1) {
-
-		if(!sharedMemory->writerTurn && myTurn) {
+		if(sharedMemory->writerTurn && myTurn) {
 			printf("Data read from memory: %s\n",sharedMemory->userInput.c_str());
 			sharedMemory->numTimesRead = sharedMemory->numTimesRead + 1;			
 			if(sharedMemory->numTimesRead == 2) {

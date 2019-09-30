@@ -1,5 +1,5 @@
-#include<iostream>
-#include<thread>
+#include <iostream>
+#include <thread>
 #include <pthread.h>
 #include <string> 
 #include <stdlib.h>
@@ -13,7 +13,7 @@
 using namespace std;
 
 typedef struct Dataset{
-	int writerTurn;
+	int writerTurn =1;
 	int readtOneTurn;
 	int readerTwoTurn;
 	bool flag[2] = {false, false};
@@ -27,6 +27,7 @@ void my_handler(int num);
 
 int main(){
 	int shmid = 0;	
+	key_t key;
 	//set up sigHandler to receive ^C signal and call custom signal handler function
 	struct sigaction sigIntHandler;
 	sigIntHandler.sa_handler = my_handler;
@@ -35,12 +36,16 @@ int main(){
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	// ftok to generate unique key 
-	key_t key = ftok("shmfile",65);
+	if( (key=ftok("./",65))<(key_t)1){
+		perror("Failed to assign shmid");
+		exit(1);
+	}
 
 	// shmget returns an identifier in shmid 
 	if((shmid = shmget(key,shared_segment_size,IPC_CREAT))){
 		perror("Failed to assign shmid");
-	} 
+	}
+        	
 	
 	//Attach struct to shared memory
 	sharedMemory = (Dataset* ) shmat (shmid, 0, 0);
