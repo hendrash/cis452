@@ -13,7 +13,7 @@
 using namespace std;
 
 typedef struct Dataset{
-	bool writerTurn;
+	bool writerTurn = 1;
 	int numTimesRead;
 	string userInput;
 }Dataset;
