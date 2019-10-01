@@ -9,23 +9,19 @@
 #include <errno.h>
 #include<unistd.h>
 #include <signal.h>
+#include "DataSet.h"
 
 using namespace std;
-
-typedef struct Dataset{
-	int writerTurn =1;
-	int numTimesRead;
-	string userInput;
-}Dataset;
 
 const int shared_segment_size = sizeof(Dataset);
 
 void my_handler(int num);
 
 int main(){
-	Dataset* sharedMemory;
-	
-	int shmid = 0;	
+	Dataset sharedMemory;
+	sharedMemory.writerTurn=1;
+	Dataset * shm_ptr=&sharedMemory;
+	int shmid;	
 	key_t key;
 	//set up sigHandler to receive ^C signal and call custom signal handler function
 	struct sigaction sigIntHandler;
@@ -46,18 +42,17 @@ int main(){
 	}
         	
 	//Attach struct to shared memory
-	sharedMemory = (Dataset* ) shmat (shmid, 0, 0);
+	shm_ptr = (Dataset* ) shmat (shmid, 0, 0);
 	
 	// shmat to attach to shared memory 
 	//char *str = (char*) shmat(shmid,(void*)0,0); 
 
 	while(1) {
-		//gets(str);
-		if(sharedMemory->writerTurn) {
+		if(sharedMemory.writerTurn) {
 			cout << "Please provide data to be written into shared memory: ";
-			cin >> sharedMemory->userInput;			
-			printf("Data written into memory: %s\n",sharedMemory->userInput.c_str()); 
-			sharedMemory->writerTurn = 0;
+			cin >> sharedMemory.userInput;			
+			printf("Data written into memory: %s\n",sharedMemory.userInput.c_str()); 
+			sharedMemory.writerTurn = 0;
 		}
 	}
 }

@@ -9,14 +9,8 @@
 #include <errno.h>
 #include<unistd.h>
 #include <signal.h>
-
+#include "DataSet.h"
 using namespace std;
-
-typedef struct Dataset{
-	bool writerTurn = 1;
-	int numTimesRead;
-	string userInput;
-}Dataset;
 
 const int shared_segment_size = sizeof(Dataset);
 
@@ -25,7 +19,7 @@ void my_handler(int shmid);
 int main(){
 
 	Dataset sharedMemory;
-	sharedMemory.writerTurn=1;
+	sharedMemory.writerTurn=0;
 	Dataset* shm_ptr = &sharedMemory;
 
 	int shmid; 
@@ -60,7 +54,7 @@ int main(){
 
 	bool myTurn = true;
 	while(1) {
-		if(sharedMemory.writerTurn==1 && myTurn) {
+		if(sharedMemory.writerTurn==0 && myTurn) {
 			printf("Data read from memory: %s\n",sharedMemory.userInput.c_str());
 			sharedMemory.numTimesRead = sharedMemory.numTimesRead + 1;			
 			if(sharedMemory.numTimesRead == 2) {
