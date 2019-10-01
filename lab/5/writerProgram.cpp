@@ -18,12 +18,13 @@ typedef struct Dataset{
 	string userInput;
 }Dataset;
 
-Dataset* sharedMemory;
 const int shared_segment_size = sizeof(Dataset);
 
 void my_handler(int num);
 
 int main(){
+	Dataset* sharedMemory;
+	
 	int shmid = 0;	
 	key_t key;
 	//set up sigHandler to receive ^C signal and call custom signal handler function
@@ -34,7 +35,7 @@ int main(){
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	// ftok to generate unique key 
-	if( (key=ftok("./",65))<(key_t)1){
+	if((key=ftok("./",65))<1){
 		perror("Failed to assign shmid");
 		exit(1);
 	}
@@ -44,7 +45,6 @@ int main(){
 		perror("Failed to assign shmid");
 	}
         	
-	
 	//Attach struct to shared memory
 	sharedMemory = (Dataset* ) shmat (shmid, 0, 0);
 	
@@ -65,7 +65,7 @@ int main(){
 //When user enters ^C, print final stats before exiting the program
 void my_handler(int shmid) {
 	//detach from shared memory  
-	shmdt(sharedMemory);
+//	shmdt(sharedMemory);
 	exit(0);
 }
 
