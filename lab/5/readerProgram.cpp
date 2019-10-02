@@ -46,7 +46,8 @@ int main(){
 	}
 
 	// shmget returns an identifier in shmid 
-	if(shmid=shmget(key,shared_segment_size, S_IRUSR|S_IWUSR) < 1){
+	shmid = shmget(key,shared_segment_size, S_IRUSR|S_IWUSR);
+	if(shmid < 1){
 		perror("Failed to assign shmid");
 		exit(1);
 	}
