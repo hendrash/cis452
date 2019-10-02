@@ -1,0 +1,68 @@
+Script started on 2019-09-26 14:59:44-0400
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab/5/examples[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab/5/examples[00m$ ipcs
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages    
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status      
+0x00000000 262144     ashley     600        524288     2          dest         
+0x00000000 393217     ashley     600        524288     2          dest         
+0x00000000 425986     ashley     600        524288     2          dest         
+0x00000000 720899     ashley     600        524288     2          dest         
+0x00000000 622596     ashley     600        524288     2          dest         
+0x00000000 2686981    ashley     600        524288     2          dest         
+0x00000000 2621446    ashley     600        524288     2          dest         
+0x00000000 2490378    ashley     600        524288     2          dest         
+0x00000000 3276812    ashley     600        524288     2          dest         
+0x00000000 1835022    ashley     600        16777216   2          dest         
+0x00000000 1933327    ashley     600        524288     2          dest         
+0x00000000 1966096    ashley     600        4194304    2          dest         
+0x00000000 1998865    ashley     600        8388608    2          dest         
+0x00000000 2031634    ashley     600        33554432   2          dest         
+0x00000000 2064403    ashley     600        393216     2          dest         
+0x00000000 2162708    ashley     600        393216     2          dest         
+0x00000000 2719766    ashley     600        524288     2          dest         
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems     
+
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab/5/examples[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab/5/examples[00m$ ./sample1 
+The size of the shared memory segment is 4096
+ shared memory Id is 3670023
+value a: 0x7efbff6fd000	 value b: 0x7efbff6fe000
+^C
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab/5/examples[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab/5/examples[00m$ .[Ki[cs[K[K[Kpcs
+
+------ Message Queues --------
+key        msqid      owner      perms      used-bytes   messages    
+
+------ Shared Memory Segments --------
+key        shmid      owner      perms      bytes      nattch     status      
+0x00000000 262144     ashley     600        524288     2          dest         
+0x00000000 393217     ashley     600        524288     2          dest         
+0x00000000 425986     ashley     600        524288     2          dest         
+0x00000000 720899     ashley     600        524288     2          dest         
+0x00000000 622596     ashley     600        524288     2          dest         
+0x00000000 2686981    ashley     600        524288     2          dest         
+0x00000000 2621446    ashley     600        524288     2          dest         
+0x00000000 3670023    ashley     600        4096       0                       
+0x00000000 2490378    ashley     600        524288     2          dest         
+0x00000000 3276812    ashley     600        524288     2          dest         
+0x00000000 1835022    ashley     600        16777216   2          dest         
+0x00000000 1933327    ashley     600        524288     2          dest         
+0x00000000 1966096    ashley     600        4194304    2          dest         
+0x00000000 1998865    ashley     600        8388608    2          dest         
+0x00000000 2031634    ashley     600        33554432   2          dest         
+0x00000000 2064403    ashley     600        393216     2          dest         
+0x00000000 2162708    ashley     600        393216     2          dest         
+0x00000000 2719766    ashley     600        524288     2          dest         
+
+------ Semaphore Arrays --------
+key        semid      owner      perms      nsems     
+
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab/5/examples[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab/5/examples[00m$ ipcrm -m [K]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab/5/examples[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab/5/examples[00m$ ipcrm -m 3670023
+]0;ashley@ashley-Aspire-E5-521: ~/gvsu/cis452/lab/5/examples[01;32mashley@ashley-Aspire-E5-521[00m:[01;34m~/gvsu/cis452/lab/5/examples[00m$ exit
+exit
+
+Script done on 2019-09-26 15:00:32-0400
