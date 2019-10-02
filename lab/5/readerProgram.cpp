@@ -19,9 +19,9 @@ void my_handler(int shmid);
 
 int main(){
 
-	Dataset sharedMemory;
+	Dataset sharedMem;
 	sharedMemory.writerTurn=0;
-	Dataset* shm_ptr = &sharedMemory;
+	Dataset* sharedMemory = &sharedMem;
 
 	int shmid; 
 	key_t key; 
@@ -53,9 +53,9 @@ int main(){
 	}
        cout<< "printing the shmid:"<<shmid << "\n";
 	//Attach struct to shared memory
-	shm_ptr= (Dataset*) shmat (shmid, NULL, 0);
+	sharedMemory = (Dataset*) shmat (shmid, NULL, 0);
 	
-	if(shm_ptr==(Dataset*)-1){
+	if(sharedMemory==(Dataset*)-1){
 		perror("shmat error");
 		exit(1);	
 	}
