@@ -49,7 +49,8 @@ int main(){
 	exit(1);
 	}
 	// shmat to attach to shared memory 
-	//char *str = (char*) shmat(shmid,(void*)0,0); 
+	//char *str = (char*) shmat(shmid,(void*)0,0);
+cout<< "printing the shmid:"<<shmid << "\n";	
 
 	while(1) {
 		if(sharedMemory.writerTurn) {
