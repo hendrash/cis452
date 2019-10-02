@@ -20,7 +20,7 @@ void my_handler(int shmid);
 int main(){
 
 	Dataset sharedMem;
-	sharedMemory.writerTurn=0;
+	sharedMem.writerTurn=0;
 	Dataset* sharedMemory = &sharedMem;
 
 	int shmid; 
