@@ -20,7 +20,7 @@ void my_handler(int shmid);
 int main(){
 
 	Dataset* sharedMemory;
-	sharedMemory.writerTurn=0;
+	sharedMemory->writerTurn=0;
 	//Dataset* sharedMemory = &sharedMem;
 
 	int shmid; 
@@ -40,7 +40,7 @@ int main(){
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	// ftok to generate unique key 
-	if((key = ftok(".",65))<1){
+	if((key = ftok(".",1))<1){
 		perror("IPC error: ftok"); 
 		exit(1);
 	}
@@ -58,7 +58,7 @@ int main(){
 	bool myTurn = true;
 	while(1) {
 		if(sharedMemory->writerTurn==0 && myTurn) {
-			printf("Data read from memory: %s\n",sharedMemory->userInput.c_str());
+			printf("Data read from memory: %s\n",sharedMemory->userInput);
 			sharedMemory->numTimesRead = sharedMemory->numTimesRead + 1;			
 			if(sharedMemory->numTimesRead == 2) {
 				//Reset number of times read for next round

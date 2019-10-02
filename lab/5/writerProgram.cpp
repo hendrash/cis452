@@ -18,9 +18,7 @@ const int shared_segment_size = sizeof(Dataset);
 void my_handler(int num);
 
 int main(){
-	Dataset sharedMemory;
-	sharedMemory.writerTurn=1;
-	Dataset * shm_ptr=&sharedMemory;
+	Dataset * sharedMemory;
 	int shmid;	
 	key_t key;
 	//set up sigHandler to receive ^C signal and call custom signal handler function
@@ -31,7 +29,7 @@ int main(){
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	// ftok to generate unique key 
-	if((key=ftok("./",65))<1){
+	if((key=ftok("./",1))<1){
 		perror("Failed to assign shmid");
 		exit(1);
 	}
@@ -43,8 +41,10 @@ int main(){
 	}
         	
 	//Attach struct to shared memory
-	shm_ptr = (Dataset* ) shmat (shmid,NULL, 0);
-	if(shm_ptr==(Dataset*)-1){
+	sharedMemory = (Dataset* ) shmat (shmid,NULL, 0);
+	
+	sharedMemory->writerTurn=true;
+	if(sharedMemory==(Dataset*)-1){
 	perror("shmat failed ");
 	exit(1);
 	}
@@ -53,11 +53,11 @@ int main(){
 cout<< "printing the shmid:"<<shmid << "\n";	
 
 	while(1) {
-		if(sharedMemory.writerTurn) {
+		if(sharedMemory->writerTurn) {
 			cout << "Please provide data to be written into shared memory: ";
-			cin >> sharedMemory.userInput;			
-			printf("Data written into memory: %s\n",sharedMemory.userInput.c_str()); 
-			sharedMemory.writerTurn = 0;
+			cin >> sharedMemory->userInput;			
+			printf("Data written into memory: %s\n",sharedMemory->userInput); 
+			sharedMemory->writerTurn = 0;
 		}
 	}
 }
