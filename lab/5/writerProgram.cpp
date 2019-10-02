@@ -35,7 +35,7 @@ int main(){
 	}
 
 	// shmget returns an identifier in shmid 
-	shmid = shmget(key,shared_segment_size,IPC_CREAT | 0666);
+	shmid = shmget(key,shared_segment_size,IPC_CREAT | 0600);
 	if(shmid < 1){
 		perror("Failed to assign shmid");
 	}
