@@ -37,13 +37,16 @@ int main(){
 	}
 
 	// shmget returns an identifier in shmid 
-	if((shmid = shmget(key,shared_segment_size,IPC_CREAT))){
+	if((shmid = shmget(key,shared_segment_size,IPC_CREAT ))<1){
 		perror("Failed to assign shmid");
 	}
         	
 	//Attach struct to shared memory
-	shm_ptr = (Dataset* ) shmat (shmid, 0, 0);
-	
+	shm_ptr = (Dataset* ) shmat (shmid,NULL, 0);
+	if(shm_ptr==(Dataset*)-1){
+	perror("shmat failed ");
+	exit(1);
+	}
 	// shmat to attach to shared memory 
 	//char *str = (char*) shmat(shmid,(void*)0,0); 
 

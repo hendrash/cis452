@@ -9,6 +9,7 @@
 #include <errno.h>
 #include<unistd.h>
 #include <signal.h>
+#include <sys/stat.h>
 #include "DataSet.h"
 using namespace std;
 
@@ -39,18 +40,24 @@ int main(){
 	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	// ftok to generate unique key 
-	if((key = ftok("./",65))<1){
+	if((key = ftok(".",65))<1){
 		perror("IPC error: ftok"); 
 		exit(1);
 	}
 
 	// shmget returns an identifier in shmid 
-	if((shmid=shmget(key,shared_segment_size,IPC_CREAT))<1){
+	if((shmid=shmget(key,shared_segment_size, IPC_CREAT|S_IRUSR|S_IWUSR)<1)){
 		perror("Failed to assign shmid");
 		exit(1);
-	} 
+	}
+       cout<< "printing the shmid:"<<shmid << "\n";
 	//Attach struct to shared memory
-	shm_ptr =(struct Dataset*) shmat (shmid, 0, 0);
+	shm_ptr= (Dataset*) shmat (shmid, NULL, 0);
+	
+	if(shm_ptr==(Dataset*)-1){
+		perror("shmat error");
+		exit(1);	
+	}
 
 	bool myTurn = true;
 	while(1) {
