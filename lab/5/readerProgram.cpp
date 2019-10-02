@@ -19,9 +19,9 @@ void my_handler(int shmid);
 
 int main(){
 
-	Dataset sharedMem;
-	sharedMem.writerTurn=0;
-	Dataset* sharedMemory = &sharedMem;
+	Dataset* sharedMemory;
+	sharedMemory.writerTurn=0;
+	//Dataset* sharedMemory = &sharedMem;
 
 	int shmid; 
 	key_t key; 
@@ -53,23 +53,18 @@ int main(){
 	}
        cout<< "printing the shmid:"<<shmid << "\n";
 	//Attach struct to shared memory
-	sharedMemory = (Dataset*) shmat (shmid, NULL, 0);
-	
-	if(sharedMemory==(Dataset*)-1){
-		perror("shmat error");
-		exit(1);	
-	}
+	sharedMemory = (Dataset*) shmat(shmid, NULL, 0);
 
 	bool myTurn = true;
 	while(1) {
-		if(sharedMemory.writerTurn==0 && myTurn) {
-			printf("Data read from memory: %s\n",sharedMemory.userInput.c_str());
-			sharedMemory.numTimesRead = sharedMemory.numTimesRead + 1;			
-			if(sharedMemory.numTimesRead == 2) {
+		if(sharedMemory->writerTurn==0 && myTurn) {
+			printf("Data read from memory: %s\n",sharedMemory->userInput.c_str());
+			sharedMemory->numTimesRead = sharedMemory->numTimesRead + 1;			
+			if(sharedMemory->numTimesRead == 2) {
 				//Reset number of times read for next round
-				sharedMemory.numTimesRead = 0;
+				sharedMemory->numTimesRead = 0;
 				//Set turn back to writer so it can write again
-				sharedMemory.writerTurn = 1;
+				sharedMemory->writerTurn = 1;
 				myTurn = true;
 			}
 			myTurn = false;
