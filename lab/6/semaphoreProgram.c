@@ -13,16 +13,16 @@
 #define MUTEX 2
 
 struct sembuf {
-	unsigned short sem_num = //not sure what default int to assign here (either 0, 1, or MUTEX)
+	unsigned short sem_num = 0;
 	short sem_op = -1;
 	short sem_flg = 0;
-}waitBuf;
+} waitBuf;
 
 struct sembuf {
-	unsigned short sem_num = //not sure what default int to assign here (either 0, 1, or MUTEX)
+	unsigned short sem_num = 0;
 	short sem_op = 1;
 	short sem_flg = 0;
-}signalBuf;
+} signalBuf;
 
 //sBuf has 3 properties in it: unsigned short sem_num, short sem_op, and short sem_flg
 
