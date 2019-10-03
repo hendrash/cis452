@@ -55,21 +55,29 @@ int main(){
 	//Attach struct to shared memory
 	sharedMemory = (Dataset*) shmat(shmid, NULL, 0);
 
+	if(sharedMemory->n==0)
+	sharedMemory->writerTurn=0;
+
 	bool myTurn = true;
+	sharedMemory->n++;
 	while(1) {
+
+	if(sharedMemory->n ==1 || sharedMemory->n ==sharedMemory->numTimesRead)
+				sharedMemory->numTimesRead = 0;
+				
 		if(sharedMemory->writerTurn==0 && myTurn) {
-		myTurn=false;	
+			cout<<sharedMemory->numTimesRead;
+			myTurn=false;	
 			//printf("Data read from memory: %s\n",sharedMemory->userInput);
 			sharedMemory->numTimesRead = sharedMemory->numTimesRead + 1;			
-//			if(sharedMemory->numTimesRead == 2) {
+//			if(sharedMemory->numTimesRead == sharedMemory->n) {
 				//Reset number of times read for next round
-				sharedMemory->numTimesRead = 0;
-				//Set turn back to writer so it can write again
+			//Set turn back to writer so it can write again
 				printf("Other side: %s\n", sharedMemory->userInput);
 				sharedMemory->writerTurn = 1;
 				myTurn = true;
-			//}
-		//	myTurn = false;
+////			}
+//			myTurn = false;
 		}
 	} 
 
