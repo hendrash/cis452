@@ -9,6 +9,9 @@
 #include <sys/sem.h>
 
 #define SIZE 16
+#define FREE 0
+#define USED 1
+#define MUTEX 2
 
 struct sembuf sBuf;
 //sBuf has 3 properties in it: unsigned short sem_num, short sem_op, and short sem_flg
