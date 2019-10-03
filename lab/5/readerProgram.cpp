@@ -11,18 +11,18 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include "DataSet.h"
-
 using namespace std;
 
 const int shared_segment_size = sizeof(Dataset);
 
 void my_handler(int shmid);
-Dataset* shmptr;
+
 int main(){
 
 	Dataset* sharedMemory;
-	
-//Dataset* sharedMemory = &sharedMem;
+	sharedMemory->writerTurn=0;
+	sharedMemory->numTimesRead = 0;
+	//Dataset* sharedMemory = &sharedMem;
 
 	int shmid; 
 	key_t key; 
@@ -38,10 +38,9 @@ int main(){
 
 	sigIntHandler.sa_flags = 0;
 
-	sigaction(SIGINT, &sigIntHandler,NULL);
+	sigaction(SIGINT, &sigIntHandler, NULL);
 
 	// ftok to generate unique key 
-	signal(SIGSEGV,my_handler);
 	if((key = ftok(".",1))<1){
 		perror("IPC error: ftok"); 
 		exit(1);
@@ -57,8 +56,6 @@ int main(){
 	//Attach struct to shared memory
 	sharedMemory = (Dataset*) shmat(shmid, NULL, 0);
 
-
-	shmptr=sharedMemory;
 	if(sharedMemory->n==0)
 		sharedMemory->writerTurn=0;
 
@@ -89,15 +86,11 @@ int main(){
 
 //When user enters ^C, print final stats before exiting the program
 void my_handler(int shmid) {
-	cout<<"Exsiting reader";
-	//notify everyone your leaving
-	shmptr->n--;	
-	
-	shmid=shmptr->shmid;
+
 	//detach from shared memory  
-	shmdt(shmptr); 
+		shmdt(sharedMemory); 
 	// destroy the shared memory 
+		shmctl(shmid,IPC_RMID,NULL);
 	exit(0);
 }
-
 
