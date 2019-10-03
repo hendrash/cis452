@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <sys/sem.h>
 
+#define SIZE 16
+
 struct sembuf sBuf;
 
 int main (int argc, char *argv[])
