@@ -9,13 +9,22 @@
 #include <sys/sem.h>
 
 #define SIZE 16
-#define FREE 0
-#define USED 1
+
 #define MUTEX 2
 
-struct sembuf sBuf;
-//sBuf has 3 properties in it: unsigned short sem_num, short sem_op, and short sem_flg
+struct sembuf {
+	unsigned short sem_num = //not sure what default int to assign here (either 0, 1, or MUTEX)
+	short sem_op = -1;
+	short sem_flg = 0;
+}waitBuf;
 
+struct sembuf {
+	unsigned short sem_num = //not sure what default int to assign here (either 0, 1, or MUTEX)
+	short sem_op = 1;
+	short sem_flg = 0;
+}signalBuf;
+
+//sBuf has 3 properties in it: unsigned short sem_num, short sem_op, and short sem_flg
 
 int main (int argc, char *argv[])
 {
@@ -49,13 +58,13 @@ int main (int argc, char *argv[])
    if (!(pid = fork())) {
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[0] and shmPtr[1]
-			   //critical section!! code here semop (semId, &sbuf, 1);
+			   //critical section!!
+			   semop(semId, &waitBuf, 1); 
                temp = shmPtr[0];
                shmPtr[0] = shmPtr[1];
                shmPtr[1] = temp;
-
+			   semop(semId, &signalBuf, 1); 
       }
-	  //code here semop()
       if (shmdt (shmPtr) < 0) {
          perror ("just can't let go\n");
          exit (1);
@@ -66,9 +75,11 @@ int main (int argc, char *argv[])
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[1] and shmPtr[0]
 			   //critical section!!
+			   semop(semId, &waitBuf, 1); 
                temp = shmPtr[1];
                shmPtr[1] = shmPtr[0];
                shmPtr[0] = temp;
+			   semop(semId, &signalBuf, 1); 
       }
 
    wait (&status);
