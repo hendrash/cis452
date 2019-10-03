@@ -21,6 +21,7 @@ int main(){
 
 	Dataset* sharedMemory;
 	sharedMemory->writerTurn=0;
+	sharedMemory->numTimesRead = 0;
 	//Dataset* sharedMemory = &sharedMem;
 
 	int shmid; 
@@ -66,18 +67,30 @@ int main(){
 				sharedMemory->numTimesRead = 0;
 				
 		if(sharedMemory->writerTurn==0 && myTurn) {
+<<<<<<< HEAD
 			cout<<sharedMemory->numTimesRead;
 			myTurn=false;	
 			//printf("Data read from memory: %s\n",sharedMemory->userInput);
 			sharedMemory->numTimesRead = sharedMemory->numTimesRead + 1;			
 //			if(sharedMemory->numTimesRead == sharedMemory->n) {
+=======
+			myTurn=false;	
+			//printf("Data read from memory: %s\n",sharedMemory->userInput);
+			sharedMemory->numTimesRead = sharedMemory->numTimesRead + 1;			
+			if(sharedMemory->numTimesRead == 2) {
+>>>>>>> 0bd014875e02759cecf40cfa1f6184410b2e13cf
 				//Reset number of times read for next round
 			//Set turn back to writer so it can write again
 				printf("Other side: %s\n", sharedMemory->userInput);
 				sharedMemory->writerTurn = 1;
 				myTurn = true;
+<<<<<<< HEAD
 ////			}
 //			myTurn = false;
+=======
+			}
+		//	myTurn = false;
+>>>>>>> 0bd014875e02759cecf40cfa1f6184410b2e13cf
 		}
 	} 
 
