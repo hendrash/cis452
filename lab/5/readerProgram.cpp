@@ -88,7 +88,7 @@ int main(){
 void my_handler(int shmid) {
 
 	//detach from shared memory  
-		shmdt(sharedMemory); 
+//		shmdt(sharedMemory); 
 	// destroy the shared memory 
 		shmctl(shmid,IPC_RMID,NULL);
 	exit(0);
