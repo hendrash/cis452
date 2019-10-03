@@ -7,9 +7,9 @@
 #include <sys/shm.h>
 #include <sys/stat.h>
 
-#define SIZE 16
+sembuf sBuf;
 
-int main ()
+int main (int argc, char *argv[])
 {
    int status;
    long int i, loop, temp, *shmPtr;
@@ -17,6 +17,13 @@ int main ()
    pid_t pid;
 
       // get value of loop variable (from command-line argument)
+      loop = atoi(argv[1]);
+	  
+	  //create a new semaphore set for use by this (and other) processes
+	  semId = semget (IPC_PRIVATE, 1, 00600));
+	  
+	  //initialize the semaphore set referenced by the previously obtained semId handle
+	  semctl (semId, 0, SETVAL, 1);
 
    if ((shmId = shmget (IPC_PRIVATE, SIZE, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0) {
       perror ("i can't get no..\n");
@@ -31,12 +38,13 @@ int main ()
    shmPtr[1] = 1;
 
    if (!(pid = fork())) {
-	   
-	   //start of child's critical section
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[0] and shmPtr[1]
+               temp = shmPtr[0];
+               shmPtr[0] = shmPtr[1];
+               shmPtr[1] = temp;
+
       }
-	  //end of child's critical section
       if (shmdt (shmPtr) < 0) {
          perror ("just can't let go\n");
          exit (1);
@@ -44,15 +52,15 @@ int main ()
       exit(0);
    }
    else
-	   
-	  //start of parent's critical section
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[1] and shmPtr[0]
+               temp = shmPtr[1];
+               shmPtr[1] = shmPtr[0];
+               shmPtr[0] = temp;
       }
-	  //end of parent's critical section
+
    wait (&status);
    printf ("values: %li\t%li\n", shmPtr[0], shmPtr[1]);
-
    if (shmdt (shmPtr) < 0) {
       perror ("just can't let go\n");
       exit (1);
@@ -61,6 +69,9 @@ int main ()
       perror ("can't deallocate\n");
       exit(1);
    }
+   
+   // remove the semaphore referenced by semId - may need to move the location of this line
+	semctl (semId, 0, IPC_RMID);
 
    return 0;
 }
