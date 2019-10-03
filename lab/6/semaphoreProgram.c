@@ -47,9 +47,9 @@ int main (int argc, char *argv[])
    shmPtr[1] = 1;
 
    if (!(pid = fork())) {
-	   //code here semop (semId, &sbuf, 1);
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[0] and shmPtr[1]
+			   //critical section!! code here semop (semId, &sbuf, 1);
                temp = shmPtr[0];
                shmPtr[0] = shmPtr[1];
                shmPtr[1] = temp;
@@ -65,6 +65,7 @@ int main (int argc, char *argv[])
    else
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[1] and shmPtr[0]
+			   //critical section!!
                temp = shmPtr[1];
                shmPtr[1] = shmPtr[0];
                shmPtr[0] = temp;
