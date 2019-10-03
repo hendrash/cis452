@@ -11,6 +11,8 @@
 #define SIZE 16
 
 struct sembuf sBuf;
+//sBuf has 3 properties in it: unsigned short sem_num, short sem_op, and short sem_flg
+
 
 int main (int argc, char *argv[])
 {
@@ -42,7 +44,7 @@ int main (int argc, char *argv[])
    shmPtr[1] = 1;
 
    if (!(pid = fork())) {
-	   //code here semop()
+	   //code here semop (semId, &sbuf, 1);
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[0] and shmPtr[1]
                temp = shmPtr[0];
