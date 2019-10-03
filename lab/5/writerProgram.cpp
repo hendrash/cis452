@@ -10,7 +10,8 @@
 #include<unistd.h>
 #include <signal.h>
 #include "DataSet.h"
-
+#include <iostream>
+#include <cstring>
 using namespace std;
 
 const int shared_segment_size = sizeof(Dataset);
@@ -44,6 +45,10 @@ int main(){
 	sharedMemory = (Dataset* ) shmat (shmid,NULL, 0);
 	
 	sharedMemory->writerTurn=true;
+	sharedMemory->n=0;
+	sharedMemory-> numTimesRead=0;
+	memset(sharedMemory->userInput, '\000', sizeof(sharedMemory->userInput));
+
 	if(sharedMemory==(Dataset*)-1){
 	perror("shmat failed ");
 	exit(1);
