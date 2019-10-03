@@ -59,7 +59,7 @@ int main(){
 
 
 	shmptr=sharedMemory;
-//	if(sharedMemory->n==0)
+	if(sharedMemory->n==0)
 		sharedMemory->writerTurn=0;
 
 	bool myTurn = true;
