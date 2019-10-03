@@ -65,7 +65,9 @@ int main(){
 
 	if(sharedMemory->n ==1 || sharedMemory->n ==sharedMemory->numTimesRead)
 				sharedMemory->numTimesRead = 0;
-				
+		if(sharedMemory->writerTurn==1)
+			myTurn = true;
+	
 		if(sharedMemory->writerTurn==0 && myTurn) {
 
 			cout<<sharedMemory->numTimesRead;
@@ -78,8 +80,6 @@ int main(){
 			//Set turn back to writer so it can write again
 				printf("Other side: %s\n", sharedMemory->userInput);
 				sharedMemory->writerTurn = 1;
-				myTurn = true;
-		
 		}
 	} 
 
