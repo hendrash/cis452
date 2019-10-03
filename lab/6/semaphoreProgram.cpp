@@ -6,14 +6,16 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/stat.h>
+#include <sys/sem.h>
 
-sembuf sBuf;
+struct sembuf sBuf;
 
 int main (int argc, char *argv[])
 {
    int status;
    long int i, loop, temp, *shmPtr;
    int shmId;
+   int semId;
    pid_t pid;
 
       // get value of loop variable (from command-line argument)
@@ -38,6 +40,7 @@ int main (int argc, char *argv[])
    shmPtr[1] = 1;
 
    if (!(pid = fork())) {
+	   //code here semop()
       for (i=0; i<loop; i++) {
                // swap the contents of shmPtr[0] and shmPtr[1]
                temp = shmPtr[0];
@@ -45,6 +48,7 @@ int main (int argc, char *argv[])
                shmPtr[1] = temp;
 
       }
+	  //code here semop()
       if (shmdt (shmPtr) < 0) {
          perror ("just can't let go\n");
          exit (1);
