@@ -11,18 +11,18 @@
 #include <signal.h>
 #include <sys/stat.h>
 #include "DataSet.h"
+
 using namespace std;
 
 const int shared_segment_size = sizeof(Dataset);
 
 void my_handler(int shmid);
-`
+Dataset* shmptr;
 int main(){
 
 	Dataset* sharedMemory;
-	sharedMemory->writerTurn=0;
-	sharedMemory->numTimesRead = 0;
-	//Dataset* sharedMemory = &sharedMem;
+	
+//Dataset* sharedMemory = &sharedMem;
 
 	int shmid; 
 	key_t key; 
@@ -38,9 +38,10 @@ int main(){
 
 	sigIntHandler.sa_flags = 0;
 
-	sigaction(SIGINT, &sigIntHandler, NULL);
+	sigaction(SIGINT, &sigIntHandler,NULL);
 
 	// ftok to generate unique key 
+	signal(SIGSEGV,my_handler);
 	if((key = ftok(".",1))<1){
 		perror("IPC error: ftok"); 
 		exit(1);
@@ -52,32 +53,39 @@ int main(){
 		perror("Failed to assign shmid");
 		exit(1);
 	}
-	cout<< "printing the shmid:"<<shmid << "\n";
+	cout<< "printing the shmid:"<<shmid << endl;
 	//Attach struct to shared memory
 	sharedMemory = (Dataset*) shmat(shmid, NULL, 0);
 
-	if(sharedMemory->n==0)
+
+	shmptr=sharedMemory;
+//	if(sharedMemory->n==0)
 		sharedMemory->writerTurn=0;
 
 	bool myTurn = true;
 	sharedMemory->n++;
 	while(1) {
 
+//		cout<<"Shared Memory "<<sharedMemory->userInput<<endl;
 		// last one out shut the lights. This check for the last one out
 		if(sharedMemory->n ==sharedMemory->numTimesRead){
 			sharedMemory->numTimesRead = 0;
-			sharedMemory->writerTurn = 1;}
+			sharedMemory->writerTurn = true; 
+		}
 
 		//provents a process from entering the critical section once it has entered once
-		if(sharedMemory->writerTurn==1){
-			myTurn = true;}
+		if(sharedMemory->writerTurn==true){
+			myTurn = true;
+		
+		}
 
 		// only print out onces	
-		if(sharedMemory->writerTurn==0 && myTurn) {
-			cout<<sharedMemory->numTimesRead;
+		if(sharedMemory->writerTurn==false && myTurn) {
 			myTurn=false;	
-			sharedMemory->numTimesRead = sharedMemory->numTimesRead + 1;			
-			printf("Other side: %s\n", sharedMemory->userInput);
+			sharedMemory->numTimesRead=sharedMemory->numTimesRead+1;
+			cout<<"Shared Memory "<<sharedMemory->userInput<<endl;
+			//printf("Other side: %s\n", sharedMemory->userInput);
+		
 		}
 	} 
 
@@ -86,11 +94,15 @@ int main(){
 
 //When user enters ^C, print final stats before exiting the program
 void my_handler(int shmid) {
-
+	cout<<"Exsiting reader"<<endl;
+	//notify everyone your leaving
+	shmptr->n--;	
+	
+	shmid=shmptr->shmid;
 	//detach from shared memory  
-//		shmdt(sharedMemory); 
+	shmdt(shmptr); 
 	// destroy the shared memory 
-		shmctl(shmid,IPC_RMID,NULL);
 	exit(0);
 }
+
 
