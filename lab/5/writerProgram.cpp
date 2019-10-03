@@ -22,7 +22,6 @@ void my_handler(int num);
 Dataset * shmptr;
 int main(){
 	Dataset * sharedMemory;
-	shmptr=sharedMemory;
 	int shmid;	
 	key_t key;
 	//set up sigHandler to receive ^C signal and call custom signal handler function
@@ -48,12 +47,14 @@ int main(){
 	sharedMemory = (Dataset* ) shmat (shmid,NULL, 0);
 
 	// sets sharedMemorys values
+	
 	sharedMemory->shmid=shmid;	
 	sharedMemory->writerTurn=true;
 	sharedMemory->n=0;
 	sharedMemory-> numTimesRead=0;
 	memset(sharedMemory->userInput, '\000', sizeof(sharedMemory->userInput));
 	
+	shmptr=sharedMemory;
 	if(sharedMemory==(Dataset*)-1){
 	perror("shmat failed ");
 	exit(1);
@@ -75,7 +76,6 @@ cout<< "printing the shmid:"<<shmid << "\n";
 //When user enters ^C, print final stats before exiting the program
 void my_handler(int shmid) {
 	shmid=shmptr->shmid;
-
 	//detach from shared memory  
 	if(shmdt(shmptr)==-1){
 	perror("failed to detach");

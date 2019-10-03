@@ -21,7 +21,6 @@ Dataset* shmptr;
 int main(){
 
 	Dataset* sharedMemory;
-	sharedMemory=shmptr;
 	
 //Dataset* sharedMemory = &sharedMem;
 
@@ -59,6 +58,7 @@ int main(){
 	sharedMemory = (Dataset*) shmat(shmid, NULL, 0);
 
 
+	shmptr=sharedMemory;
 	if(sharedMemory->n==0)
 		sharedMemory->writerTurn=0;
 
