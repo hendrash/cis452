@@ -9,22 +9,11 @@
 #include <sys/sem.h>
 
 #define SIZE 16
-
 #define MUTEX 2
 
-struct sembuf {
-	unsigned short sem_num = 0;
-	short sem_op = -1;
-	short sem_flg = 0;
-} waitBuf;
-
-struct sembuf {
-	unsigned short sem_num = 0;
-	short sem_op = 1;
-	short sem_flg = 0;
-} signalBuf;
-
 //sBuf has 3 properties in it: unsigned short sem_num, short sem_op, and short sem_flg
+struct sembuf waitBuf = { 0, -1, 0 };
+struct sembuf signalBuf = { 0, 1, 0 };
 
 int main (int argc, char *argv[])
 {
