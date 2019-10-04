@@ -27,10 +27,16 @@ int main (int argc, char *argv[])
       loop = atoi(argv[1]);
 	  
 	  //create a new semaphore set for use by this (and other) processes
-	  semId = semget (IPC_PRIVATE, 1, 00600);
+	  if((semId = semget (IPC_PRIVATE, 1, 00600)) < 0) {
+		perror ("semget failed\n");
+		exit (1);
+	  }
 	  
 	  //initialize the semaphore set referenced by the previously obtained semId handle
-	  semctl (semId, 0, SETVAL, 1);
+	  if(semctl (semId, 0, SETVAL, 1) < 0) {
+		perror ("semctl initialization failed\n");
+		exit (1);  
+	  }
 
    if ((shmId = shmget (IPC_PRIVATE, SIZE, IPC_CREAT|S_IRUSR|S_IWUSR)) < 0) {
       perror ("i can't get no..\n");
@@ -83,7 +89,10 @@ int main (int argc, char *argv[])
    }
    
    // remove the semaphore referenced by semId - may need to move the location of this line
-	semctl (semId, 0, IPC_RMID);
+	if(semctl (semId, 0, IPC_RMID) < 0) {
+	  perror ("error removing semaphore\n");
+      exit(1);
+	}
 
    return 0;
 }
