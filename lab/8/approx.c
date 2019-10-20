@@ -15,8 +15,8 @@ int approximate(int a,int b);
 key_t key; int getKey();
 void main(){
 	getKey();
+	printf("%lu <- test\n",shmLimit(test1));
 	printf("%lu\n",shmLimit(shmPredicate));
-	printf("%lu\n",shmLimit(test1));
 	printf("%lu",shmLimit(semPredicate));
 }
 
@@ -34,15 +34,14 @@ _Bool test1(long a){
 }
 _Bool semPredicate(long size){
 	int semid;
-	if((semid=semget(IPC_PRIVATE,size,0))>0){
-		return 1;// we might have to remove the semaphore but idk
-	}
+	if((semid=semget(IPC_PRIVATE,size,0))>0) {return 1;}
 	return 0;
 }
+//This method needs some fixing 
 _Bool shmPredicate(long sharedMemorySize){
 	int shmid;
 	if((shmid=shmget(key,sharedMemorySize,IPC_CREAT | 0600))>0){
-		shmctl(shmid,IPC_RMID,NULL);
+	//	shmctl(shmid,IPC_RMID,NULL);
 		return 1;}
 	return 0;
 }
