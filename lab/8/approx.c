@@ -1,13 +1,12 @@
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
-#include <string.h>
-#include <string.h>
-#include <string.h>
-#include <string.h>
-
+#include <sys/stat.h>
+#include <sys/sem.h>
 _Bool shmPredicate(long sharedMemorySize);
 _Bool semPredicate(long counting);
 long shmLimit(_Bool (*predicate)(long));
@@ -33,8 +32,12 @@ for(long i=0; i!=1; j=j+i/2){
 _Bool test1(long a){
 	return a<=385483187;
 }
-_Bool semPredicate(long counting){
-	return counting<=165561847;
+_Bool semPredicate(long size){
+	int semid;
+	if((semid=semget(IPC_PRIVATE,size,0))>0){
+		return 1;// we might have to remove the semaphore but idk
+	}
+	return 0;
 }
 _Bool shmPredicate(long sharedMemorySize){
 	int shmid;
