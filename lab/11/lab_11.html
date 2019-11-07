@@ -1,0 +1,172 @@
+<!DOCTYPE doctype PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+<html lang="en-us"><head>
+    <meta http-equiv="Content-Type" content="text/html;
+      charset=ISO-8859-1">
+    <meta name="GENERATOR" content="Mozilla/4.7 [en] (Win98; I)
+      [Netscape]">
+    <title>gw's CS 452 Lab</title></head>
+<body style="direction: ltr;" bgcolor="#ffffff">
+    <center>
+      <h2> CS 452 Lab: &nbsp;Week 11<br>
+        Virtual Memory Concepts</h2>
+    </center>
+    
+    <hr>
+    <h3> Overview</h3>
+The purpose of this lab assignment is to conduct and interpret
+experiments that
+introduce&nbsp;virtual memory concepts.&nbsp; Specifically, the lab
+investigates the effect of memory-intensive process execution, frame
+allocation policies, and page replacement&nbsp;by observing periodic
+system reports of virtual memory statistics.<br>
+    <h3>&nbsp;<br>
+    </h3>
+    <h3> Activities</h3>
+    <ul>
+      <li> Work your way through the following exercises, demonstrating
+        your knowledge of the material by answering the numbered
+        questions.</li>
+      <li> Submit a <span style="font-style: italic;">detailed </span>lab
+report
+
+
+        that includes your answers to the numbered questions.&nbsp;
+        Think about what these experiments are trying to discover/illustrate.<br>
+      </li>
+    </ul>
+    <h3>&nbsp;<br>
+    </h3>
+    <h3> Virtual Memory Performance Statistics</h3>
+    Self-monitoring is a task performed by most operating systems - it
+    is useful for administration and auditing purposes.&nbsp; Since
+    there are many subsystems in a typical OS, there are many different
+    performance auditing utilities.&nbsp; This lab concerns virtual
+    memory, hence the primary&nbsp;tool used will be <b>vmstat</b>
+    (virtual memory statistics).&nbsp; The utility programs <b>free</b>
+    and <b>top</b> also give memory usage statistics.&nbsp; Begin by
+    reading the man pages for these utilities to get an idea of the
+    types of information they provide and the various output options
+    available via command-line parameters.
+    <p>The <b>vmstat</b> utility is typically used by system
+      administrators to characterize the performance of a system.&nbsp;
+      For example, to an administrator a large number of swapped
+      processes and a large amount of active virtual memory is
+      indicative of a system with a severe memory shortage (and high
+      paging activity) =&gt; time to install more RAM.</p>
+    <p><span style="font-weight: bold;">Note</span>:&nbsp;
+there are several different types of memory, and memory measures,
+referred to in this lab.&nbsp; Be sure you understand the difference
+and the correct use of each metric. &nbsp;Also, pay special attention
+to the units; i.e. does a utility report memory usage in bytes,
+kilobytes (KB), megabytes (MB), etc.<br>
+    </p><p>Study the following test program; in particular, note its
+      memory demand requirements (the <span style="font-family: Courier New,Courier,monospace;">malloc()</span> request) and its memory access profile (the loop). &nbsp;The value <span style="font-family: Courier New,Courier,monospace;">dim</span> (dimension), is expressed as <span style="font-family: monospace;">COEFFICIENT</span>&nbsp;Kilobytes, and is used to control memory demand by creating a two-dimensional <span style="font-family: Courier New,Courier,monospace;">dim × dim</span> matrix of integers. &nbsp;The value <span style="font-family: Courier New,Courier,monospace;">LOOP</span> is used solely to keep the program executing long enough to observe its memory demand with the <span style="font-weight: bold;">vmstat</span> utility. </p>
+    <p><u>Sample Program</u> </p><span style="font-family: monospace;">#include &lt;stdio.h&gt;<br>#include &lt;stdlib.h&gt;<br><br>#define COEFFICIENT 2<br>#define KB 1024<br>#define LOOP 200<br><br>int main()<br>{<br>&nbsp;&nbsp; int count, *intPtr;<br><br>&nbsp;&nbsp; long int i, j, dim =&nbsp;</span><span style="font-family: monospace;">COEFFICIENT</span><span style="font-family: monospace;"> * KB;<br><br>&nbsp;&nbsp; if ((intPtr = malloc (dim * dim * sizeof(int))) == 0) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; perror ("totally out of space");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit (1);<br>&nbsp;&nbsp; }<br>&nbsp;&nbsp; for (count=1; count&lt;=LOOP; count++)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (i=0; i&lt;dim; i++)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (j=0; j&lt;dim; j++)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; intPtr[i * dim + j] = (i + j) % count;<br><br>&nbsp;&nbsp; free (intPtr);<br>&nbsp;&nbsp; return 0;<br>}<br></span><p><b>1.&nbsp; Determine your system configuration:</b> </p>
+    <ul>
+      <li>specify what eos system you are
+          working on</li>
+      <ol start="1" style="list-style-type: lower-alpha;">
+        <li>use the <b>free</b> memory utility program to determine:&nbsp;</li><ul><li>the total amount of <span style="font-style: italic;">physical
+
+
+
+          </span>memory (KB) on your system&nbsp;</li><li> the current amount of <span style="font-style: italic;">free </span>memory (KB)</li></ul>
+        
+        
+      </ol>
+    </ul>
+    <b>2.&nbsp; Examine and observe the memory demand of an executing process:</b>
+    <ul>
+      <li> study the Sample Program; then compile it and run it once (to
+        prime the system)</li><ol start="1" style="list-style-type: lower-alpha;"><li>what is your estimate of the approximate memory demand of the Sample Program?</li></ol>
+      <li> start <b>vmstat</b>, make your window appropriately wide, and configure it to display statistics once
+        per second; let the system stabilize</li>
+      
+      
+      <li>in another window, execute the Sample Program again</li>
+      <ol start="2" style="list-style-type: lower-alpha;"><li> approximately how much does the amount of free (idle) memory change?</li><li> considering your estimated memory demand of the Sample Program (question 2a), explain
+        why the observed change is an expected result.</li></ol>
+      
+    </ul>
+    <b>3.&nbsp; Examine the effect of increased demand for memory
+      resources:</b>
+    <ul>
+      <li>on a typical EOS system, you might have around 10-12 Gb free memory. &nbsp;Adjust&nbsp;<span style="font-family: monospace;">COEFFICIENT</span> in the Sample Program to a value that causes the&nbsp;memory
+demand&nbsp;of the Sample Program to be&nbsp;equal to the amount of idle (free) memory on
+your machine. &nbsp;Note: if you only have 2-3 GB free, then you should slightly exceed the amount of free memory.</li>
+      <ul>
+        </ul><ol start="1" style="list-style-type: lower-alpha;"><li style="list-style-type: lower-alpha;">the computed value for <span style="font-family: monospace;">COEFFICIENT</span> will be different on different machines -- describe and
+          <span style="font-style: italic;">justify </span>your choice
+          of the <span style="font-family: monospace;">COEFFICIENT</span>&nbsp;parameter. <span style="font-family: Courier New,Courier,monospace;"></span><span style="font-family: Courier New,Courier,monospace;"></span><span style="font-weight: bold;"></span></li></ol><ul><li><span style="font-weight: bold;">Important</span>:&nbsp;</li><ul><li>your memory demand should be approximately equal to the observed amount of <span style="font-style: italic;">idle</span> memory
+          (as displayed in question 2b)</li><li>your memory demand should&nbsp;<span style="font-weight: bold;">not</span><span style="font-style: italic;"> </span>exceed the
+          total amount of <span style="font-style: italic;">physical</span> memory on your system (as determined
+          in question 1).</li></ul><ul><li>reduce the <b><tt>LOOP</tt></b>
+          parameter down to 1 (or be prepared to wait awhile).<br>
+        </li></ul>
+      </ul>
+      <li> configure and run <b>vmstat </b>to display statistics once
+        per second; include the '<span style="font-family: monospace; font-weight: bold;">-a</span>' option</li>
+      <li> in another window, execute the Sample Program</li>
+      
+      <ol start="2" style="list-style-type: lower-alpha;"><li>observe what happens to the amount of free
+        memory.&nbsp; Given your computations and the results from experiment 2 above, is this
+        what you expected to see? &nbsp;Why / why not?</li><li>reference the man pages for <span style="font-weight: bold;">vmstat</span> to understand exactly what is being displayed. &nbsp;What other <span style="font-style: italic;">memory </span>field(s),
+if any, changed during execution?
+&nbsp;How has the amount of memory free changed before/after running the
+test program? &nbsp;Speculate:&nbsp;<i>why</i> have
+these fields&nbsp;changed? In other words, explain how&nbsp;the system
+is adapting to the large memory demand of the program.</li></ol>
+      
+      
+    </ul>
+    <b>4.&nbsp; Examine the effect of memory access patterns:</b>
+    <ul>
+      <li>change the&nbsp;<span style="font-family: monospace;">COEFFICIENT</span> and LOOP parameters back to their original values.&nbsp; Read the man
+        pages for the <span style="font-weight: bold;">time</span> utility
+        program.&nbsp; Then use <span style="font-family: monospace;">/usr/bin/time</span> together with command-line arguments as described for <span style="font-weight: bold;">time</span> to obtain complete
+        statistics (i.e. run in <span style="font-style: italic;">verbose</span> mode). &nbsp;Execute and time the&nbsp;Sample Program.<b><tt><br>
+          </tt></b></li>
+      
+      <ol start="1" style="list-style-type: lower-alpha;"><li>obtain basic statistics</li><ul><li>what is the size of a page in Linux?</li><li>how long does the program take to run?</li></ul></ol>
+      <li> change the memory access statement in the Sample Program to
+        read:<br>
+      </li>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <tt>intPtr[j * dim + i] = (i + j) % count;</tt><br>
+      then re-compile and re-run the program, collecting statistics on execution time.
+      <ol start="2" style="list-style-type: lower-alpha;"><li> <i>precisely</i>, how does this change alter the program's
+        memory <span style="font-style: italic;">access</span> pattern (i.e. what memory objects get "touched", and in what order)? A diagram will&nbsp;help here.</li><li>how does this change affect the program's execution
+        time?</li><li> <i>precisely</i>,
+why does the change have the observed effect (your answer must
+incorporate an important&nbsp;concept related to virtual memory)?</li></ol>
+      
+      
+    </ul>
+    <b>5.&nbsp; Examine the use of virtual memory:</b>
+    <ul>
+      <li>change the memory access pattern for the Sample Program back to
+        its original form.&nbsp; Change the <b><tt>LOOP</tt></b> value
+        to 1.&nbsp; Adjust the&nbsp;<span style="font-family: monospace;">COEFFICIENT</span> parameter in the
+        Sample Program to a value that causes the&nbsp;memory demand of
+        the program to exceed the total amount of <i>physical</i>
+        memory on your machine (as determined in question 1 above). &nbsp;</li><ol start="1" style="list-style-type: lower-alpha;"><li>describe and <span style="font-style: italic;">justify </span>your computation</li></ol>
+      <li> configure and run <b>vmstat</b> to display statistics once every
+        second and use <span style="font-family: monospace; font-weight: bold;">/usr/bin/time</span> in verbose mode to execute and time
+        the program<br>
+      </li>
+      <ol start="2" style="list-style-type: lower-alpha;"><li> observe <span style="font-weight: bold;">vmstat</span>
+system statistics as the program executes.&nbsp; What happens to the
+amount of free memory (during and after the run)? &nbsp;Describe <span style="font-style: italic;">all</span> the
+other fields that have changed (including non-memory fields), and describe why they have changed?<br>
+      </li><li> explain how the
+        operating system is adapting to the increased memory demand of the Sample
+        Program.&nbsp; Include a brief discussion of the execution time
+        and the number of&nbsp;page faults incurred.&nbsp; Your explanation should
+        demonstrate that you understand what is happening from a virtual
+        memory viewpoint.</li></ol>
+      
+    </ul>
+    <br>
+    &nbsp; <br>
+    &nbsp; <br>
+    &nbsp;
+  </body></html>
