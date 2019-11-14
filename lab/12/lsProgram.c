@@ -12,19 +12,27 @@ int main(int argc, char *argv[])
    struct stat statBuf;
    DIR *dirPtr;
    struct dirent *entryPtr;
+   
+    if (argc < 2) {
+      printf ("Usage: diractory name required\n");
+      exit(1);
+    }
 
-   //open stream in current directory for reading in data
-   dirPtr = opendir (".");
+   //open stream in the specified directory for reading in data
+   dirPtr = opendir (argv[1]);
 
-   //loop through every file in the current directory, and print out its statistics
+   //loop through every file in the specified directory, and print out its statistics
    while ((entryPtr = readdir (dirPtr))) {
-      printf ("%-20s\n", entryPtr->d_name);
      if (stat (entryPtr->d_name, &statBuf) < 0) {
         perror ("huh?  there is ");
         exit(1);
      } else {
-	   printf ("value is: %u\n", S_ISREG(statBuf.st_mode));
-       printf ("Size in bytes is: %li\n", statBuf.st_size);
+	   //printf ("value is: %u\n", S_ISREG(statBuf.st_mode));
+	   printf ("User ID: %li", statBuf.st_size);
+	   printf ("Group ID: %li", statBuf.st_size);
+	   //printf ("Size (bytes): %li", statBuf.st_size);
+       printf ("Inode number: %li", entryPtr->d_ino);
+	   printf ("%-20s\n", entryPtr->d_name);
      }
     }
 	
