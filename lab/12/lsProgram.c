@@ -28,10 +28,10 @@ int main(int argc, char *argv[])
         exit(1);
      } else {
 	   //printf ("value is: %u\n", S_ISREG(statBuf.st_mode));
-	   printf ("User ID: %li", statBuf.st_size);
-	   printf ("Group ID: %li", statBuf.st_size);
+	   printf ("User ID: %u ", statBuf.st_uid);
+	   printf ("Group ID: %u ", statBuf.st_gid);
 	   //printf ("Size (bytes): %li", statBuf.st_size);
-       printf ("Inode number: %li", entryPtr->d_ino);
+       printf ("Inode number: %li ", entryPtr->d_ino);
 	   printf ("%-20s\n", entryPtr->d_name);
      }
     }
