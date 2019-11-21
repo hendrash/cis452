@@ -7,6 +7,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <unistd.h>
+
 int main(int argc, char *argv[])
 { 	if(strcmp(argv[1], "-s")==0 ){
 	symlink(argv[2],argv[3]);	
