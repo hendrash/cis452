@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <dirent.h>
+#include <string.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[])
@@ -30,8 +31,13 @@ int main(int argc, char *argv[])
    dirPtr = opendir (filePathPtr);
    
    //loop through every file in the specified directory, and print out its statistics
+   char *currentFilePath = malloc(150);
    while ((entryPtr = readdir (dirPtr))) {
-     if (stat (filePathPtr, &statBuf) < 0) {
+	   strcpy(currentFilePath, filePathPtr);
+	   strcat(currentFilePath, "/");
+	   strcat(currentFilePath, entryPtr->d_name);
+     if (lstat (currentFilePath, &statBuf) < 0) {
+		printf ("Path that errored out: %s ", currentFilePath);
         perror ("huh?  there is ");
         exit(1);
      } else {
@@ -45,5 +51,6 @@ int main(int argc, char *argv[])
 	
    //close data stream
    closedir (dirPtr);
+   free(currentFilePath);
    return 0;
 }
